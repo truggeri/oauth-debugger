@@ -7,18 +7,20 @@ import (
 // Handler Type for http response handler function
 type Handler func(http.ResponseWriter, *http.Request)
 
-func onlyGet(w http.ResponseWriter, r *http.Request, h Handler) {
+// OnlyGet Blocks all requests except GETs
+func OnlyGet(w http.ResponseWriter, r *http.Request, h Handler) {
 	if r.Method != http.MethodGet {
-		http.Error(w, "405 - Method Not Allowed", http.StatusMethodNotAllowed)
+		http.Error(w, "", http.StatusMethodNotAllowed)
 		return
 	}
 
 	h(w, r)
 }
 
-func onlyPost(w http.ResponseWriter, r *http.Request, h Handler) {
+// OnlyPost Blocks all requests except POSTs
+func OnlyPost(w http.ResponseWriter, r *http.Request, h Handler) {
 	if r.Method != http.MethodPost {
-		http.Error(w, "405 - Method Not Allowed", http.StatusMethodNotAllowed)
+		http.Error(w, "", http.StatusMethodNotAllowed)
 		return
 	}
 
