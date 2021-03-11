@@ -1,10 +1,8 @@
-import App from "./components/App.svelte";
+import LoginApp from "./components/LoginApp.svelte";
 
-const app = new App({
-	target: document.body,
+const loginApp = new LoginApp({
+	target: document.getElementById("login-app"),
 	props: {}
 });
 
-window.app = app;
-
-export default app;
+export default loginApp;
