@@ -1,8 +1,12 @@
 import LoginApp from "./components/LoginApp.svelte";
+import SetupApp from "./components/SetupApp.svelte";
 
-const loginApp = new LoginApp({
+export const loginApp = new LoginApp({
 	target: document.getElementById("login-app"),
 	props: {}
 });
 
-export default loginApp;
+export const setupApp = new SetupApp({
+	target: document.getElementById("setup-app"),
+	props: {}
+});
