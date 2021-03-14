@@ -1,4 +1,4 @@
-package oauthdebugger
+package shared
 
 import (
 	"net/http"

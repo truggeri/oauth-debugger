@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+
+	"./shared"
 )
 
 // Authorize prints only on GET request
 func Authorize(w http.ResponseWriter, r *http.Request) {
-	OnlyGet(w, r, authorize)
+	shared.OnlyGet(w, r, authorize)
 }
 
 func authorize(w http.ResponseWriter, r *http.Request) {

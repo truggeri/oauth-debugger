@@ -3,6 +3,8 @@ package oauthdebugger
 import (
 	"encoding/json"
 	"net/http"
+
+	"./shared"
 )
 
 type Response struct {
@@ -12,7 +14,7 @@ type Response struct {
 
 // Client generates and returns client codes
 func Client(w http.ResponseWriter, r *http.Request) {
-	OnlyPost(w, r, client)
+	shared.OnlyPost(w, r, client)
 }
 
 func client(w http.ResponseWriter, r *http.Request) {
@@ -23,6 +25,16 @@ func client(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewDecoder(r.Body).Decode(&decoder); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if decoder.Name == "" {
+		http.Error(w, "name cannot be blank", http.StatusBadRequest)
+		return
+	}
+
+	if decoder.RedirectUri == "" {
+		http.Error(w, "redirect_uri cannot be blank", http.StatusBadRequest)
 		return
 	}
 
@@ -40,5 +52,5 @@ func client(w http.ResponseWriter, r *http.Request) {
 }
 
 func generateCodes() Response {
-	return Response{ClientId: "foo", ClientSecret: "bar"}
+	return Response{ClientId: shared.RandomString(32), ClientSecret: shared.RandomString(32)}
 }
