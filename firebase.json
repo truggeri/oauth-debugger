@@ -1,6 +1,7 @@
 {
   "hosting": {
     "public": "public",
+    "cleanUrls": true,
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -10,6 +11,10 @@
       {
         "source": "/oauth/authorize",
         "function": "authorize"
+      },
+      {
+        "source": "/client",
+        "function": "client"
       }
     ]
   }

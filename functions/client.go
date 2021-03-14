@@ -1,0 +1,44 @@
+package oauthdebugger
+
+import (
+	"encoding/json"
+	"net/http"
+)
+
+type Response struct {
+	ClientId     string
+	ClientSecret string
+}
+
+// Client generates and returns client codes
+func Client(w http.ResponseWriter, r *http.Request) {
+	OnlyPost(w, r, client)
+}
+
+func client(w http.ResponseWriter, r *http.Request) {
+	var decoder struct {
+		Name        string `json:"name"`
+		RedirectUri string `json:"redirect_uri"`
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&decoder); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	var resp = generateCodes()
+
+	js, err := json.Marshal(resp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(js)
+}
+
+func generateCodes() Response {
+	return Response{ClientId: "foo", ClientSecret: "bar"}
+}
