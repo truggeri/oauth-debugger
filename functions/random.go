@@ -1,4 +1,4 @@
-package shared
+package oauthdebugger
 
 import (
 	"math/rand"

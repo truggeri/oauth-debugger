@@ -3,8 +3,6 @@ package oauthdebugger
 import (
 	"encoding/json"
 	"net/http"
-
-	"./shared"
 )
 
 type Response struct {
@@ -14,7 +12,7 @@ type Response struct {
 
 // Client generates and returns client codes
 func Client(w http.ResponseWriter, r *http.Request) {
-	shared.OnlyPost(w, r, client)
+	OnlyPost(w, r, client)
 }
 
 func client(w http.ResponseWriter, r *http.Request) {
@@ -52,5 +50,5 @@ func client(w http.ResponseWriter, r *http.Request) {
 }
 
 func generateCodes() Response {
-	return Response{ClientId: shared.RandomString(32), ClientSecret: shared.RandomString(32)}
+	return Response{ClientId: RandomString(32), ClientSecret: RandomString(32)}
 }
