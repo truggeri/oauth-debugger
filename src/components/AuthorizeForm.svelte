@@ -1,8 +1,15 @@
 <script lang="typescript">
+  import { createEventDispatcher } from 'svelte';
+  const dispatch = createEventDispatcher();
+
   export let user: { username: string, password: string}
 
-  function authorize() { alert("Authorize " + user.username)}
-  function deny() {}
+  function authorize() {
+    window.location.replace("/index.html?foo=bar");
+  }
+  function deny() {
+    dispatch("deny", {});
+  }
 </script>
 
 <style>
