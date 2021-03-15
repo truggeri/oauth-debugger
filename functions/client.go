@@ -10,8 +10,8 @@ type Response struct {
 	ClientSecret string
 }
 
-// Client generates and returns client codes
-func Client(w http.ResponseWriter, r *http.Request) {
+// CreateClient generates and returns client codes
+func CreateClient(w http.ResponseWriter, r *http.Request) {
 	OnlyPost(w, r, client)
 }
 
