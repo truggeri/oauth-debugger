@@ -49,3 +49,19 @@ func connect() (*firestore.Client, error) {
 	client, err := firestore.NewClient(ctx, projectId)
 	return client, err
 }
+
+// Save puts record in db
+func Save(c Client) error {
+	var db *firestore.Client
+	db, err := connect()
+	if err != nil {
+		return err
+	}
+
+	doc := doc(db, c.ClientId)
+	_, err = doc.Create(ctx, c)
+	if err != nil {
+		return err
+	}
+	return nil
+}

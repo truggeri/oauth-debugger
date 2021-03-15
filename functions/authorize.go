@@ -17,7 +17,7 @@ func authorize(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	existingClient, err := GetClient(params.clientId)
+	existingClient, err := GetClient(params.ClientId)
 	if err != nil || (existingClient == Client{}) {
 		http.Error(w, "client_id does not exist", http.StatusUnauthorized)
 		return
@@ -28,12 +28,12 @@ func authorize(w http.ResponseWriter, r *http.Request) {
 }
 
 func validAuthorize(p *params) bool {
-	if p.clientId == "" {
+	if p.ClientId == "" {
 		p.code, p.message = http.StatusBadRequest, "client_id is missing"
 		return false
 	}
 
-	if p.redirectUri == "" {
+	if p.RedirectUri == "" {
 		p.code, p.message = http.StatusBadRequest, "redirect_uri is missing"
 		return false
 	}
