@@ -2,43 +2,28 @@ package oauthdebugger
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
 )
 
-type Response struct {
+type clientResponse struct {
 	ClientId     string
 	ClientSecret string
 }
 
 // CreateClient generates and returns client codes
 func CreateClient(w http.ResponseWriter, r *http.Request) {
-	OnlyPost(w, r, client)
+	OnlyPost(w, r, createClient)
 }
 
-func client(w http.ResponseWriter, r *http.Request) {
-	var decoder struct {
-		Name        string `json:"name"`
-		RedirectUri string `json:"redirect_uri"`
-	}
-
-	if err := json.NewDecoder(r.Body).Decode(&decoder); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+func createClient(w http.ResponseWriter, r *http.Request) {
+	params := parseParams(r.Body)
+	if !validClient(&params) {
+		http.Error(w, params.message, params.code)
 		return
 	}
 
-	if decoder.Name == "" {
-		http.Error(w, "name cannot be blank", http.StatusBadRequest)
-		return
-	}
-
-	if decoder.RedirectUri == "" {
-		http.Error(w, "redirect_uri cannot be blank", http.StatusBadRequest)
-		return
-	}
-
-	var resp = generateCodes()
-
-	js, err := json.Marshal(resp)
+	js, err := generateCodeJson()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -49,6 +34,47 @@ func client(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 }
 
-func generateCodes() Response {
-	return Response{ClientId: RandomString(32), ClientSecret: RandomString(32)}
+func parseParams(body io.ReadCloser) params {
+	var p params
+	var decoder struct {
+		Name        string `json:"name"`
+		RedirectUri string `json:"redirect_uri"`
+	}
+
+	if err := json.NewDecoder(body).Decode(&decoder); err != nil {
+		p.code, p.message = http.StatusBadRequest, err.Error()
+		return p
+	}
+	p.name, p.redirectUri = decoder.Name, decoder.RedirectUri
+	return p
+}
+
+func validClient(p *params) bool {
+	if p.Error() {
+		return false
+	}
+
+	if p.name == "" {
+		p.code, p.message = http.StatusBadRequest, "name cannot be blank"
+		return false
+	}
+
+	if p.redirectUri == "" {
+		p.code, p.message = http.StatusBadRequest, "redirect_uri cannot be blank"
+		return false
+	}
+
+	return true
+}
+
+func generateCodeJson() ([]byte, error) {
+	js, err := json.Marshal(generateCodes())
+	if err != nil {
+		return nil, err
+	}
+	return js, nil
+}
+
+func generateCodes() clientResponse {
+	return clientResponse{ClientId: RandomString(32), ClientSecret: RandomString(32)}
 }

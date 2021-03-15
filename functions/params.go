@@ -1,7 +1,6 @@
 package oauthdebugger
 
 import (
-	"fmt"
 	"net/url"
 )
 
@@ -15,14 +14,12 @@ type params struct {
 }
 
 type paramError struct {
-	Code    int
-	Message string
+	code    int
+	message string
 }
 
 func parse(input url.Values) params {
 	var p params
-
-	fmt.Printf("params: %d\n", len(input["client_id"]))
 
 	if len(input["client_id"]) != 0 && input["client_id"][0] != "" {
 		p.clientId = input["client_id"][0]
@@ -45,7 +42,7 @@ func parse(input url.Values) params {
 
 func (p params) Error() bool {
 	e := false
-	if p.Code > 0 {
+	if p.code > 0 {
 		e = true
 	}
 	return e

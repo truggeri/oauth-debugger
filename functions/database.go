@@ -10,7 +10,7 @@ import (
 
 // Client representation of a client (user)
 type Client struct {
-	ClientId     string `firestore:"client_id`
+	ClientId     string `firestore:"client_id"`
 	ClientSecret string `firestore:"client_secret"`
 	Code         string `firestore:"code"`
 	Name         string `firestore:"name"`

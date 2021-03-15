@@ -1,7 +1,6 @@
 package oauthdebugger
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 )
@@ -13,8 +12,8 @@ func Authorize(w http.ResponseWriter, r *http.Request) {
 
 func authorize(w http.ResponseWriter, r *http.Request) {
 	params := parse(r.URL.Query())
-	if !params.validAuthorize() {
-		http.Error(w, "parameters are not valid", http.StatusBadRequest)
+	if !validAuthorize(&params) {
+		http.Error(w, params.message, params.code)
 		return
 	}
 
@@ -28,10 +27,21 @@ func authorize(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, loginUrl, http.StatusFound)
 }
 
-func (p params) validAuthorize() bool {
-	if p.clientId == "" || p.redirectUri == "" || p.responseType != "code" {
-		fmt.Printf("client_id: %s, redirect_uri: %s, type: %s\n", p.clientId, p.redirectUri, p.responseType)
+func validAuthorize(p *params) bool {
+	if p.clientId == "" {
+		p.code, p.message = http.StatusBadRequest, "client_id is missing"
 		return false
 	}
+
+	if p.redirectUri == "" {
+		p.code, p.message = http.StatusBadRequest, "redirect_uri is missing"
+		return false
+	}
+
+	if p.responseType != "code" {
+		p.code, p.message = http.StatusBadRequest, "response_type is not 'code'"
+		return false
+	}
+
 	return true
 }
