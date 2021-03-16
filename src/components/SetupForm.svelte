@@ -1,5 +1,5 @@
 <script lang="typescript">
-  import { blur } from "svelte/transition";
+  import Alert from "./Alert.svelte";
   import { createEventDispatcher } from "svelte";
   const dispatch = createEventDispatcher();
 
@@ -55,15 +55,6 @@
 </script>
 
 <style>
-  div.error {
-    background-color: rgba(255, 0, 0, 0.3);
-    border: 2px solid #990000;
-    border-radius: 6px;
-    margin-bottom: 12px;
-    padding: 12px;
-    width: 100%;
-  }
-
   input.error {
     border: 2px solid #990000;
   }
@@ -71,9 +62,7 @@
 
 <div>
   {#if setupError}
-    <div class="error" transition:blur="{{duration: 500}}">
-      <strong>Error</strong> {errorMessage}
-    </div>
+    <Alert klass="error" boldMsg="Error" message={errorMessage} />
   {/if}
 
   <form action="#">

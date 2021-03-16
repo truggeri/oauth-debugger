@@ -1,9 +1,8 @@
 <script lang="typescript">
-  import { blur } from "svelte/transition";
+  import Alert from "./Alert.svelte";
+  import UsersTable from "./UsersTable.svelte"
   import { createEventDispatcher } from "svelte";
   const dispatch = createEventDispatcher();
-
-  import UsersTable from "./UsersTable.svelte"
 
   export let users: {username: string, password: string}[]
 
@@ -28,15 +27,6 @@
 </script>
 
 <style>
-  div.error {
-    background-color: rgba(255, 0, 0, 0.3);
-    border: 2px solid #990000;
-    border-radius: 6px;
-    margin-bottom: 12px;
-    padding: 12px;
-    width: 100%;
-  }
-
   input.error {
     border: 2px solid #990000;
   }
@@ -47,9 +37,7 @@
   <br />
   
   {#if loginError}
-    <div class="error" transition:blur="{{duration: 500}}">
-      <strong>Error</strong> Login information incorrect
-    </div>
+    <Alert klass="error" boldMsg="Error" message="Login information incorrect" />
   {/if}
 
   <div>

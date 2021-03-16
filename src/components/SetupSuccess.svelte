@@ -1,25 +1,10 @@
 <script lang="typescript">
-  import { blur } from "svelte/transition";
-
+  import Alert from "./Alert.svelte";
   export let client: any;
 </script>
 
-<style>
-  div.success {
-    background-color: rgba(0, 255, 0, 0.3);
-    border: 2px solid #009900;
-    border-radius: 6px;
-    margin-bottom: 12px;
-    padding: 12px;
-    width: 100%;
-  }
-</style>
-
 <div>
-  <div class="success" transition:blur="{{duration: 500}}">
-    <strong>Success!</strong> Here are your credentials.
-  </div>
-
+  <Alert klass="success" boldMsg="Success" message="Here are your credentials" />
   <br>
 
   <table>
