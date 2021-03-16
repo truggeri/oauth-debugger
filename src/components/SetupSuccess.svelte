@@ -17,23 +17,23 @@
     <tbody>
       <tr>
         <td>App Name</td>
-        <td>{ client.name }</td>
+        <td>{ client.Name }</td>
       </tr>
       <tr>
         <td>Redirect Uri</td>
-        <td>{ client.redirect_uri }</td>
+        <td>{ client.RedirectUri }</td>
       </tr>
       <tr>
         <td>Client Id</td>
-        <td>{ client.data.ClientId }</td>
+        <td>{ client.ClientId }</td>
       </tr>
       <tr>
         <td>Client Secret</td>
-        <td>{ client.data.ClientSecret }</td>
+        <td>{ client.ClientSecret }</td>
       </tr>
       <tr>
         <td>Expires</td>
-        <td>{ client.data.Expires }</td>
+        <td>{ client.Expires }</td>
       </tr>
     </tbody>
   </table>

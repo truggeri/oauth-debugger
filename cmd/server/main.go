@@ -19,7 +19,8 @@ func (sr *statusRecorder) WriteHeader(status int) {
 }
 
 func main() {
-	http.Handle("/healthz", requestLogging(http.HandlerFunc(health)))
+	http.Handle("/health", requestLogging(http.HandlerFunc(health)))
+	http.Handle("/badrequest", requestLogging(http.HandlerFunc(badrequest)))
 	http.Handle("/client", requestLogging(http.HandlerFunc(oauthdebugger.CreateClient)))
 	http.Handle("/oauth/authorize", requestLogging(http.HandlerFunc(oauthdebugger.Authorize)))
 	http.ListenAndServe(":8090", nil)
@@ -40,4 +41,9 @@ func requestLogging(h http.Handler) http.Handler {
 func health(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprint(w, "healthy")
+}
+
+func badrequest(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusBadRequest)
+	fmt.Fprint(w, "bad request")
 }

@@ -8,39 +8,10 @@
   let redirect_uri = "";
   let setupError = false;
 
-  function successfulSetup(data: any) {
-    dispatch("success", {
-			data: data,
-      name: name,
-      redirect_uri: redirect_uri
-		});
-  }
-
   function error(msg: string) {
     setupError = true;
     errorMessage = msg;
     setTimeout(() => setupError = false, 5000)
-  }
-
-  function getCodes() {
-    const url = "http://localhost:8090/client"
-    const req = { name: name, redirect_uri: redirect_uri };
-    const config = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify(req)
-    }
-    
-    fetch(url, config)
-    .then(async r => await r.json())
-    .then(function(data) {
-      console.log("data");
-      console.log(data);
-      successfulSetup(data);
-    }).catch(err => console.log('Request Failed', err));
   }
 
   function handleSubmit() {
@@ -49,7 +20,10 @@
     } else if ((redirect_uri.match(/[&\?<>{}\[\]=]/)) != null) {
       error("Redirect URI contains an invalid character");
     } else {
-      getCodes();
+      dispatch("submit", {
+      name: name,
+      redirect_uri: redirect_uri
+		});
     }
   }
 </script>
