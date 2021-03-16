@@ -2,12 +2,14 @@ package oauthdebugger
 
 import (
 	"net/url"
+	"time"
 )
 
 type params struct {
 	paramError
 	ClientId     string
 	ClientSecret string
+	Expires      time.Time
 	Name         string
 	RedirectUri  string
 	responseType string

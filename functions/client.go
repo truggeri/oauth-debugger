@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"time"
 )
 
 // CreateClient generates and returns client codes
@@ -25,15 +26,8 @@ func createClient(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	js, err := generateCodeJson(params)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
+	w.Header().Add("Content-Type", "application/json; charset=utf-8")
+	json.NewEncoder(w).Encode(params)
 }
 
 func parseParams(body io.ReadCloser) params {
@@ -69,15 +63,8 @@ func validClient(p *params) bool {
 	return true
 }
 
-func generateCodeJson(params params) ([]byte, error) {
-	js, err := json.Marshal(params)
-	if err != nil {
-		return nil, err
-	}
-	return js, nil
-}
-
 func generateCodes(p *params) {
 	p.ClientId = RandomString(32)
 	p.ClientSecret = RandomString(32)
+	p.Expires = time.Now().Add(time.Hour)
 }
