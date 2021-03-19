@@ -1,8 +1,9 @@
 package oauthdebugger
 
 import (
+	"html/template"
 	"net/http"
-	"os"
+	"path"
 )
 
 // Authorize prints only on GET request
@@ -23,8 +24,16 @@ func authorize(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	loginUrl := os.Getenv("LOGIN_URL")
-	http.Redirect(w, r, loginUrl, http.StatusFound)
+	filePath := path.Join("public", "login.html")
+	tmpl, err := template.ParseFiles(filePath)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if err := tmpl.Execute(w, nil); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func validAuthorize(p *params) bool {

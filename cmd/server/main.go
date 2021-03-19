@@ -19,10 +19,17 @@ func (sr *statusRecorder) WriteHeader(status int) {
 }
 
 func main() {
+	defer log.Println("Shutting down server")
+
 	http.Handle("/health", requestLogging(http.HandlerFunc(health)))
 	http.Handle("/badrequest", requestLogging(http.HandlerFunc(badrequest)))
 	http.Handle("/client", requestLogging(http.HandlerFunc(oauthdebugger.CreateClient)))
 	http.Handle("/oauth/authorize", requestLogging(http.HandlerFunc(oauthdebugger.Authorize)))
+
+	fs := http.FileServer(http.Dir("./public"))
+	http.Handle("/", requestLogging(fs))
+
+	log.Println("Starting server on port 8090...")
 	http.ListenAndServe(":8090", nil)
 }
 
