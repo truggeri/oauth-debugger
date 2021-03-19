@@ -13,7 +13,7 @@
   }
 
   function getClient(event: any) {
-    const url = "https://oauth-debugger.truggeri.com/client"
+    const url = CONFIG.default.app_url + "/client"
     const req = { name: event.detail.name, redirect_uri: event.detail.redirect_uri };
     const config = {
       method: "POST",
