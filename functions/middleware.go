@@ -29,6 +29,6 @@ func OnlyPost(w http.ResponseWriter, r *http.Request, h Handler) {
 
 func addSecurityHeaders(w http.ResponseWriter, r *http.Request, h Handler) {
 	w.Header().Add("X-XSS-Protection", "1; mode=block")
-	w.Header().Add("Content-Security-Policy", "default-src 'self'; font-src 'self'; frame-src 'none'; img-src 'self'; media-src 'none'; object-src 'none'; script-src 'self'; style-src 'self'")
+	w.Header().Add("Content-Security-Policy", "font-src 'self'; frame-src 'none'; img-src 'self'; media-src 'none'; object-src 'none';")
 	h(w, r)
 }
