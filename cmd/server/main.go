@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	oauthdebugger "../../functions"
+	oauthdebugger "github.com/truggeri/oauth-debugger/functions"
 )
 
 type statusRecorder struct {

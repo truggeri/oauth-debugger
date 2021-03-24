@@ -83,4 +83,5 @@ node_modules/
 .env.yaml
 
 # Go build output
+vendor/
 main
