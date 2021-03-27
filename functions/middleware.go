@@ -14,7 +14,8 @@ func OnlyGet(w http.ResponseWriter, r *http.Request, h Handler) {
 		return
 	}
 
-	addSecurityHeaders(w, r, h)
+	addSecurityHeaders(w)
+	h(w, r)
 }
 
 // OnlyPost Blocks all requests except POSTs
@@ -24,11 +25,11 @@ func OnlyPost(w http.ResponseWriter, r *http.Request, h Handler) {
 		return
 	}
 
-	addSecurityHeaders(w, r, h)
+	addSecurityHeaders(w)
+	h(w, r)
 }
 
-func addSecurityHeaders(w http.ResponseWriter, r *http.Request, h Handler) {
+func addSecurityHeaders(w http.ResponseWriter) {
 	w.Header().Add("X-XSS-Protection", "1; mode=block")
 	w.Header().Add("Content-Security-Policy", "font-src 'self'; frame-src 'none'; img-src 'self'; media-src 'none'; object-src 'none';")
-	h(w, r)
 }

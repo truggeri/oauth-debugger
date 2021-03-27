@@ -7,12 +7,14 @@ import (
 
 type params struct {
 	paramError
-	ClientId     string
-	ClientSecret string
-	Expires      time.Time
-	Name         string
-	RedirectUri  string
-	responseType string
+	ClientId     string    `json:"client_id,omitempty"`
+	ClientSecret string    `json:"client_secret,omitempty"`
+	Code         string    `json:"code,omitempty"`
+	Expires      time.Time `json:"expires,omitempty"`
+	GrantType    string    `json:"grant_type,omitempty"`
+	Name         string    `json:"name,omitempty"`
+	RedirectUri  string    `json:"redirect_uri,omitempty"`
+	ResponseType string    `json:"response_type,omitempty"`
 }
 
 type paramError struct {
@@ -37,11 +39,19 @@ func parse(input url.Values) params {
 	}
 
 	if len(input["client_secret"]) != 0 && input["client_secret"][0] != "" {
-		p.ClientId = input["client_secret"][0]
+		p.ClientSecret = input["client_secret"][0]
+	}
+
+	if len(input["code"]) != 0 && input["code"][0] != "" {
+		p.Code = input["code"][0]
+	}
+
+	if len(input["grant_type"]) != 0 && input["grant_type"][0] != "" {
+		p.GrantType = input["grant_type"][0]
 	}
 
 	if len(input["response_type"]) != 0 && input["response_type"][0] != "" {
-		p.responseType = input["response_type"][0]
+		p.ResponseType = input["response_type"][0]
 	}
 
 	if len(input["redirect_uri"]) != 0 && input["redirect_uri"][0] != "" {
