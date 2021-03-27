@@ -2,6 +2,10 @@
 
 An app for debugging oauth code, a mock Service Api
 
+## Documentation
+
+See our [api documentation](https://oauth-debugger.truggeri.com/docs) for full details of each endpoint that's available.
+
 ## Build
 
 This app can be built, and run, in many different ways.
@@ -38,6 +42,20 @@ go build ./cmd/service/main.go
 ## Deploy
 
 The app is deployed in two pieces, the UI and Go functions.
+
+### Docker Deploy
+
+There is a Dockerfile made specifically for deploying the app to Google Cloud. This app consumes two environment variables for configuration, and mounts secrets in a volume.
+
+```bash
+docker build -t oad-deploy --file deploy.Dockerfile .
+docker run -it --name dply --rm -e "GCP-PROJECT=xxx" -e "GCP-ACCOUNT=yyy" -v secrets:/secrets oad-deploy 
+```
+
+| ENV | Value |
+| ------------- | ------------- |
+| GCP-PROJECT | Project ID |
+| GCP-ACCOUNT | Email of GCP Service Account used for deployment |
 
 ### UI
 

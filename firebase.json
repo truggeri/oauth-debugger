@@ -15,6 +15,10 @@
       {
         "source": "/client",
         "function": "client"
+      },
+      {
+        "source": "/oauth/token",
+        "function": "token"
       }
     ]
   }

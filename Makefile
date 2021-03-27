@@ -28,19 +28,21 @@ list:
 # ==============================================================================
 # GCP
 
-RUNTIME = go113
-ZONE = us-central1
+define gcp_deploy
+  gcloud functions deploy $(1) --entry-point=$(2) --project=$(GCP-PROJECT) --allow-unauthenticated --region=$(REGION) --runtime $(RUNTIME) --trigger-http --memory=$(MEM) --env-vars-file=/secrets/.env.yaml
+endef
+
+gcp-authorize:
+	gcloud auth activate-service-account $(GCP-ACCOUNT) --key-file=/secrets/key.json
 
 gcp-deploy-all: gcp-deploy-authorize gcp-deploy-client gcp-deploy-token
 
-gcp-deploy-authorize:
-	cd functions &&	gcloud functions deploy authorize --allow-unauthenticated --region=$(ZONE) --runtime $(RUNTIME) --trigger-http --memory=128MB --entry-point=Authorize
+gcp-deploy-authorize: gcp-authorize
+	$(call gcp_deploy, authorize, Authorize)
 
-gcp-deploy-client:
-	cd functions
-	gcloud functions deploy client --allow-unauthenticated --region=$(ZONE) --runtime $(RUNTIME) --trigger-http --memory=128MB --entry-point=Client
+gcp-deploy-client: gcp-authorize
+	$(call gcp_deploy, client, GetClient)
 	
-gcp-deploy-token:
-	cd functions
-	gcloud functions deploy token --allow-unauthenticated --region=$(ZONE) --runtime $(RUNTIME) --trigger-http --memory=128MB --entry-point=Token
+gcp-deploy-token: gcp-authorize
+	$(call gcp_deploy, token, Token)
 	

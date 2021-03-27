@@ -81,6 +81,7 @@ node_modules/
 # dotenv environment variables file
 .env
 .env.yaml
+secrets/
 
 # Go build output
 vendor/
