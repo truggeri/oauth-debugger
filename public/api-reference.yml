@@ -1,0 +1,186 @@
+openapi: 3.0.1
+info:
+  title: Oauth Debugger
+  description: This application is a mock authorization server to be used as a debugger for other application developers
+  contact:
+    email: oauth-debugger@truggeri.com
+  license:
+    name: MIT
+    url: https://github.com/truggeri/oauth-debugger/blob/main/LICENSE
+  version: 0.1.0
+externalDocs:
+  description: See our Github
+  url: https://github.com/truggeri/oauth-debugger/
+servers:
+- url: https://oauth-debugger.truggeri.com/
+tags:
+  - name: oauth2
+    description: Oauth2 routes
+  - name: setup
+    description: Get setup to use this application
+paths:
+  /oauth/authorize:
+    get:
+      tags:
+      - oauth2
+      summary: User authorization request
+      description: Client makes initial request for user authorization.
+      operationId: authorize
+      parameters:
+        - name: client_id
+          in: query
+          description: Status values that need to be considered for filter
+          required: true
+          style: form
+          explode: false
+          schema:
+            type: string
+        - name: response_type
+          in: query
+          description: Static value of 'code'
+          required: true
+          style: form
+          explode: false
+          schema:
+            type: string
+        - name: redirect_uri
+          in: query
+          description: Redirect uri
+          required: true
+          style: form
+          explode: false
+          schema:
+            type: string
+        - name: scope
+          in: query
+          description: Scope of the request, 'read'
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: Valid request
+          content:
+            application/html: {}
+        400:
+          description: Missing required param
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: client_id is missing
+        401:
+          description: client_id does not exist
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: client_id does not exist
+  /oauth/token:
+    get:
+      tags:
+      - oauth2
+      summary: Access token request
+      description: Client now makes a request for a token giving their ClientId and ClientSecret
+      operationId: token
+      parameters:
+      - name: client_id
+        in: query
+        description: Status values that need to be considered for filter
+        required: true
+        style: form
+        explode: false
+        schema:
+          type: string
+      - name: client_secret
+        in: query
+        description: Status values that need to be considered for filter
+        required: true
+        style: form
+        explode: false
+        schema:
+          type: string
+      - name: grant_type
+        in: query
+        description: Static value of 'authorization_code'
+        required: true
+        style: form
+        explode: false
+        schema:
+          type: string
+      - name: code
+        in: query
+        description: Code value provided by xxx
+        required: true
+        style: form
+        explode: false
+        schema:
+          type: string
+      - name: redirect_uri
+        in: query
+        description: Redirect uri
+        required: true
+        style: form
+        explode: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: Valid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        400:
+          description: Missing required param
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: client_id is missing
+        401:
+          description: client_id does not exist, client_id does not match client_secret, or token is invalid
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: client_id does not exist
+components:
+  schemas:
+    Token:
+      required:
+        - AccessToken
+        - TokenType
+        - ExpiresIn
+        - RefreshToken
+        - Scope
+        - Uid
+      type: object
+      properties:
+        AccessToken:
+          type: string
+          description: Api token for use
+          example: abc123
+        TokenType:
+          type: string
+          description: The type of token
+          example: bearer
+        ExpiresIn:
+          type: integer
+          description: Seconds until the token expires
+          format: int64
+          example: 3600
+        RefeshToken:
+          type: string
+          description: A token used to refresh the access token before it expires
+          example: def789
+        Scope:
+          type: string
+          description: The scope of the access tokens authorization
+          example: read
+        Uid:
+          type: string
+          description: A unique identifier for the transaction
+          example: a8040289-51fd-4fc6-a651-6e4d5c129d7d

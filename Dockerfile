@@ -27,7 +27,6 @@ RUN npm install
 
 COPY src /work/src
 COPY types /work/types
-RUN ls -lah /work
 RUN npm run build
 
 # -----------------------------------------------------------------------------
@@ -42,6 +41,7 @@ RUN apk add --no-cache bash
 COPY --from=go-build /service/main /service/main
 COPY templates /service/serverless_function_source_code
 COPY public /service/public
+COPY docs/api-reference.yml /service/public/api-reference.yml
 COPY --from=node-build /work/public /service/public
 WORKDIR /service
 EXPOSE 8090
