@@ -20,7 +20,7 @@ func createClient(w http.ResponseWriter, r *http.Request) {
 	}
 
 	generateCodes(&params)
-	err := Save(params.client())
+	err := createDbClient(params.client())
 	if err != nil {
 		http.Error(w, "Could not save new client", http.StatusExpectationFailed)
 		return

@@ -25,8 +25,9 @@ func main() {
 	http.Handle("/badrequest", requestLogging(http.HandlerFunc(badrequest)))
 	http.Handle("/client", requestLogging(http.HandlerFunc(oauthdebugger.CreateClient)))
 	http.Handle("/oauth/authorize", requestLogging(http.HandlerFunc(oauthdebugger.Authorize)))
+	http.Handle("/oauth/token", requestLogging(http.HandlerFunc(oauthdebugger.Token)))
 
-	fs := http.FileServer(http.Dir("./public"))
+	fs := http.FileServer(http.Dir("."))
 	http.Handle("/", requestLogging(fs))
 
 	log.Println("Starting server on port 8090...")

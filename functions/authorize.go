@@ -1,9 +1,7 @@
 package oauthdebugger
 
 import (
-	"html/template"
 	"net/http"
-	"path"
 )
 
 // Authorize prints only on GET request
@@ -18,21 +16,16 @@ func authorize(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	existingClient, err := GetClient(params.ClientId)
+	existingClient, err := getDbClient(params.ClientId)
 	if err != nil || (existingClient == Client{}) {
 		http.Error(w, "client_id does not exist", http.StatusUnauthorized)
 		return
 	}
 
-	filePath := path.Join("public", "login.html")
-	tmpl, err := template.ParseFiles(filePath)
+	err = renderTemplate(w, "login.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
-	}
-
-	if err := tmpl.Execute(w, nil); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
 
@@ -47,7 +40,7 @@ func validAuthorize(p *params) bool {
 		return false
 	}
 
-	if p.responseType != "code" {
+	if p.ResponseType != "code" {
 		p.code, p.message = http.StatusBadRequest, "response_type is not 'code'"
 		return false
 	}

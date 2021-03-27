@@ -4,23 +4,29 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"time"
 
-	"cloud.google.com/go/firestore"
+	firestore "cloud.google.com/go/firestore"
 )
 
 // Client representation of a client (user)
 type Client struct {
-	ClientId     string `firestore:"client_id"`
-	ClientSecret string `firestore:"client_secret"`
-	Code         string `firestore:"code"`
-	Name         string `firestore:"name"`
-	RedirectUri  string `firestore:"redirect_uri"`
+	ClientId     string    `firestore:"client_id"`
+	ClientSecret string    `firestore:"client_secret"`
+	Code         string    `firestore:"code"`
+	Name         string    `firestore:"name"`
+	RedirectUri  string    `firestore:"redirect_uri"`
+	RefreshToken string    `firestore:"refresh_token"`
+	Token        string    `firestore:"token"`
+	TokenExpires time.Time `firestore:"token_expires"`
 }
 
 var ctx = context.Background()
 
-// GetClient Retrieves a client structure from the database
-func GetClient(clientId string) (Client, error) {
+type docAction func(*firestore.DocumentRef) error
+
+// getDbClient Retrieves a client structure from the database
+func getDbClient(clientId string) (Client, error) {
 	var db *firestore.Client
 	db, err := connect()
 	if err != nil {
@@ -39,19 +45,27 @@ func GetClient(clientId string) (Client, error) {
 	return c, err
 }
 
-func doc(db *firestore.Client, clientId string) *firestore.DocumentRef {
-	matcher := fmt.Sprintf("clients/%s", clientId)
-	return db.Doc(matcher)
-}
-
 func connect() (*firestore.Client, error) {
 	projectId := os.Getenv("OAD_PROJECT_ID")
 	client, err := firestore.NewClient(ctx, projectId)
 	return client, err
 }
 
-// Save puts record in db
-func Save(c Client) error {
+func doc(db *firestore.Client, clientId string) *firestore.DocumentRef {
+	matcher := fmt.Sprintf("clients/%s", clientId)
+	return db.Doc(matcher)
+}
+
+// Creates a new Client in the database
+func createDbClient(c Client) error {
+	createAction := func(doc *firestore.DocumentRef) error {
+		_, err := doc.Create(ctx, c)
+		return err
+	}
+	return withDbDoc(c, createAction)
+}
+
+func withDbDoc(c Client, action docAction) error {
 	var db *firestore.Client
 	db, err := connect()
 	if err != nil {
@@ -59,9 +73,23 @@ func Save(c Client) error {
 	}
 
 	doc := doc(db, c.ClientId)
-	_, err = doc.Create(ctx, c)
-	if err != nil {
+	return action(doc)
+}
+
+// Updates an existing Client in the database
+func updateDbClient(c Client, updates []firestore.Update) error {
+	updateAction := func(doc *firestore.DocumentRef) error {
+		_, err := doc.Update(ctx, updates)
 		return err
 	}
-	return nil
+	return withDbDoc(c, updateAction)
+}
+
+// Sets entire existing client to the database
+func _setDbClient(c Client) error {
+	saveAction := func(doc *firestore.DocumentRef) error {
+		_, err := doc.Set(ctx, c)
+		return err
+	}
+	return withDbDoc(c, saveAction)
 }
