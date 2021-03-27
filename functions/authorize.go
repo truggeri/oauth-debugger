@@ -22,7 +22,7 @@ func authorize(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = renderTemplate(w, "login.html")
+	err = renderTemplate(w, "login.tmpl")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

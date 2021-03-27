@@ -1,0 +1,6 @@
+.DS_Store
+.firebase
+.git
+.idea
+node_modules
+vendor
