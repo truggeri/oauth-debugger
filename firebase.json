@@ -14,7 +14,7 @@
       },
       {
         "source": "/client",
-        "function": "client"
+        "function": "create_client"
       },
       {
         "source": "/oauth/grant",
