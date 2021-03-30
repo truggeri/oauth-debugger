@@ -30,6 +30,7 @@
     "esbuild": "^0.9.6",
     "esbuild-svelte": "^0.4.3",
     "firebase": "^8.2.1",
+    "redoc": "^2.0.0-rc.48",
     "rxfire": "^4.0.0",
     "rxjs": "^6.6.3"
   }
