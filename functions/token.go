@@ -2,19 +2,23 @@ package oauthdebugger
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
-	"time"
-
-	"cloud.google.com/go/firestore"
 )
 
 type tokenResponse struct {
-	AccessToken  string `json:"access_token"`
-	TokenType    string `json:"token_type"`
-	ExpiresIn    int64  `json:"expires_in"`
-	RefreshToken string `json:"refresh_token"`
-	Scope        string `json:"scope"`
-	Uid          string `json:"uid"`
+	AccessToken  string    `json:"access_token"`
+	TokenType    string    `json:"token_type"`
+	ExpiresIn    int64     `json:"expires_in"`
+	RefreshToken string    `json:"refresh_token"`
+	Scope        string    `json:"scope"`
+	Uid          string    `json:"uid"`
+	Info         tokenInfo `json:"info"`
+}
+
+type tokenInfo struct {
+	Email string `json:"email,omitempty"`
+	Name  string `json:"name,omitempty"`
 }
 
 // Token Returns authorization token and user info
@@ -30,7 +34,7 @@ func token(w http.ResponseWriter, r *http.Request) {
 	}
 
 	existingClient, err := getDbClient(params.ClientId)
-	if err != nil || (existingClient == Client{}) {
+	if err != nil || existingClient.empty() {
 		http.Error(w, "client_id does not exist", http.StatusUnauthorized)
 		return
 	}
@@ -40,24 +44,14 @@ func token(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if existingClient.Code != params.Code {
+	var au AuthUser
+	au, err = matchingAuthUser(existingClient, params.Code)
+	if err != nil {
 		http.Error(w, "code is not valid", http.StatusUnauthorized)
 		return
 	}
 
-	existingClient.Token = RandomString(32)
-	existingClient.TokenExpires = time.Now().Add(24 * time.Hour)
-	updates := []firestore.Update{
-		{Path: "token", Value: existingClient.Token},
-		{Path: "token_expires", Value: existingClient.TokenExpires},
-	}
-	err = updateDbClient(existingClient, updates)
-	if err != nil {
-		http.Error(w, "Could not save client token", http.StatusExpectationFailed)
-		return
-	}
-
-	respondWithJson(w, existingClient)
+	respondWithJson(w, au)
 }
 
 func validToken(p *params) bool {
@@ -89,32 +83,26 @@ func validToken(p *params) bool {
 	return true
 }
 
-func respondWithJson(w http.ResponseWriter, c Client) {
+func matchingAuthUser(c Client, code string) (AuthUser, error) {
+	for _, au := range c.Users {
+		if au.Code == code {
+			return au, nil
+		}
+	}
+	return AuthUser{}, errors.New("code could not be found")
+}
+
+func respondWithJson(w http.ResponseWriter, au AuthUser) {
 	resp := tokenResponse{
-		AccessToken:  c.Token,
+		AccessToken:  au.Token,
 		TokenType:    "bearer",
-		ExpiresIn:    24 * 60 * 60,
-		RefreshToken: "",
+		ExpiresIn:    au.TokenExpires.Unix(),
+		RefreshToken: au.RefreshToken,
 		Scope:        "read",
-		Uid:          "123",
-		// Info: struct{
-		// 	Name: ""
-		// 	Email: ""
-		// }
+		Uid:          au.Uuid,
+		Info:         tokenInfo{Name: au.Username},
 	}
 
-	// resp := `{
-	// 	"access_token":"ACCESS_TOKEN",
-	// 	"token_type":"bearer",
-	// 	"expires_in":2592000,
-	// 	"refresh_token":"REFRESH_TOKEN",
-	// 	"scope":"read",
-	// 	"uid":100101,
-	// 	"info":{
-	// 		"name":"Mark E. Mark",
-	// 		"email":"mark@thefunkybunch.com"
-	// 	}
-	// }`
 	w.Header().Add("Content-Type", "application/json; charset=utf-8")
 	json.NewEncoder(w).Encode(resp)
 }

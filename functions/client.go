@@ -13,7 +13,7 @@ func CreateClient(w http.ResponseWriter, r *http.Request) {
 }
 
 func createClient(w http.ResponseWriter, r *http.Request) {
-	params := parseParams(r.Body)
+	params := parseClientParams(r.Body)
 	if !validClient(&params) {
 		http.Error(w, params.message, params.code)
 		return
@@ -30,18 +30,11 @@ func createClient(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(params)
 }
 
-func parseParams(body io.ReadCloser) params {
+func parseClientParams(body io.ReadCloser) params {
 	var p params
-	var decoder struct {
-		Name        string `json:"name"`
-		RedirectUri string `json:"redirect_uri"`
-	}
-
-	if err := json.NewDecoder(body).Decode(&decoder); err != nil {
+	if err := json.NewDecoder(body).Decode(&p); err != nil {
 		p.code, p.message = http.StatusBadRequest, err.Error()
-		return p
 	}
-	p.Name, p.RedirectUri = decoder.Name, decoder.RedirectUri
 	return p
 }
 

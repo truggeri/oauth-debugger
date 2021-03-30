@@ -21,7 +21,8 @@
   },
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
-    "dev": "webpack-dev-server --content-base public",
+    "dev": "cross-env NODE_ENV=development webpack",
+    "serve": "webpack-dev-server --content-base public",
     "check": "svelte-check"
   },
   "dependencies": {

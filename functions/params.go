@@ -15,6 +15,7 @@ type params struct {
 	Name         string    `json:"name,omitempty"`
 	RedirectUri  string    `json:"redirect_uri,omitempty"`
 	ResponseType string    `json:"response_type,omitempty"`
+	Username     string    `json:"username,omitempty"`
 }
 
 type paramError struct {
@@ -50,12 +51,16 @@ func parse(input url.Values) params {
 		p.GrantType = input["grant_type"][0]
 	}
 
+	if len(input["redirect_uri"]) != 0 && input["redirect_uri"][0] != "" {
+		p.RedirectUri = input["redirect_uri"][0]
+	}
+
 	if len(input["response_type"]) != 0 && input["response_type"][0] != "" {
 		p.ResponseType = input["response_type"][0]
 	}
 
-	if len(input["redirect_uri"]) != 0 && input["redirect_uri"][0] != "" {
-		p.RedirectUri = input["redirect_uri"][0]
+	if len(input["username"]) != 0 && input["username"][0] != "" {
+		p.Username = input["username"][0]
 	}
 
 	return p

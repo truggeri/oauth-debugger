@@ -1,15 +1,8 @@
 <script lang="typescript">
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher } from "svelte";
   const dispatch = createEventDispatcher();
 
   export let user: { username: string, password: string}
-
-  function authorize() {
-    window.location.replace("/index.html?foo=bar");
-  }
-  function deny() {
-    dispatch("deny", {});
-  }
 </script>
 
 <style>
@@ -36,7 +29,7 @@
   <br />
 
   <div>
-    <button class="authorize" on:click|once={authorize}>Authorize</button>
-    <button on:click|once={deny}>Deny</button>
+    <button on:click|once={() => dispatch("submit", {})} class="authorize">Authorize</button>
+    <button on:click|once={() => dispatch("deny", {})}>Deny</button>
   </div>
 </div>

@@ -17,6 +17,10 @@
         "function": "client"
       },
       {
+        "source": "/oauth/grant",
+        "function": "code_grant"
+      },
+      {
         "source": "/oauth/token",
         "function": "token"
       }

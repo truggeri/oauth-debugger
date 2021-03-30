@@ -3,7 +3,9 @@ import SetupApp from "./components/SetupApp.svelte";
 
 export const loginApp = new LoginApp({
 	target: document.getElementById("login-app"),
-	props: {}
+	props: {
+		clientId: window.clientId
+	}
 });
 
 export const setupApp = new SetupApp({

@@ -4,6 +4,10 @@ import (
 	"net/http"
 )
 
+type loginTemplateData struct {
+	ClientId string
+}
+
 // Authorize prints only on GET request
 func Authorize(w http.ResponseWriter, r *http.Request) {
 	OnlyGet(w, r, authorize)
@@ -17,12 +21,12 @@ func authorize(w http.ResponseWriter, r *http.Request) {
 	}
 
 	existingClient, err := getDbClient(params.ClientId)
-	if err != nil || (existingClient == Client{}) {
+	if err != nil || existingClient.empty() {
 		http.Error(w, "client_id does not exist", http.StatusUnauthorized)
 		return
 	}
 
-	err = renderTemplate(w, "login.tmpl")
+	err = renderTemplate(w, "login.tmpl", loginTemplateData{ClientId: existingClient.ClientId})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -35,14 +35,17 @@ endef
 gcp-authorize:
 	gcloud auth activate-service-account $(GCP-ACCOUNT) --key-file=/secrets/key.json
 
-gcp-deploy-all: gcp-deploy-authorize gcp-deploy-client gcp-deploy-token
+gcp-deploy-all: gcp-deploy-authorize gcp-deploy-client gcp-deploy-code-grant gcp-deploy-token
 
 gcp-deploy-authorize: gcp-authorize
-	$(call gcp_deploy, authorize, Authorize)
+	$(call gcp_deploy,authorize,Authorize)
 
 gcp-deploy-client: gcp-authorize
-	$(call gcp_deploy, client, GetClient)
+	$(call gcp_deploy,client,GetClient)
+
+gcp-deploy-code-grant: gcp-authorize
+	$(call gcp_deploy,code_grant,CodeGrant)
 	
 gcp-deploy-token: gcp-authorize
-	$(call gcp_deploy, token, Token)
+	$(call gcp_deploy,token,Token)
 	
