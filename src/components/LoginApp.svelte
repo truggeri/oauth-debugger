@@ -1,5 +1,6 @@
 <script lang="typescript">
   import { blur, slide } from "svelte/transition";
+  import Alert from "./Alert.svelte"
   import LoginForm from "./LoginForm.svelte"
   import AuthorizeForm from "./AuthorizeForm.svelte"
   import users from "./users"
@@ -7,12 +8,28 @@
   export let clientId: string;
 
   let error = false;
+  let errorMsg = "";
   let showAuthorize = false
   let user: { username: string, password: string }
+
+  function handleError(msg: string) {
+    errorMsg = msg;
+    error = true;
+    setTimeout(() => error = false, 5000)
+  }
 
   function handleLogin(e: any) {
     showAuthorize = true
     user = e.detail.user
+  }
+
+  function handleSuccess(data: any) {
+    let uri = data.redirect_uri;
+    if (data.success && uri) {
+      window.location.replace(uri);
+    } else {
+      handleError("Something is wrong with the redirect uri provided");
+    }
   }
 
   function grantCode(_event: any) {
@@ -28,23 +45,27 @@
         "Accept": "application/json"
       },
       body: JSON.stringify(req),
-      redirect: "follow",
     }
     
     fetch(url, config)
-    .then(function(resp) {
-      if (resp.redirected) {
-        window.location.replace(resp.url);
+    .then(async function(resp) {
+      if (resp.ok) {
+        return handleSuccess(await resp.json());
       }
+      error = true;
     })
     .catch(function(err) {
       console.log("Request Failed", err);
-      error = true;
+      handleError("Something went wrong on our end")
     });
   }
 </script>
 
 <section>
+  {#if error}
+    <Alert klass="error" boldMsg="Error" message={errorMsg} />
+  {/if}
+
   {#if showAuthorize}
     <div out:blur="{{duration: 500}}" in:slide="{{delay: 500, duration: 500}}">
       <AuthorizeForm user={user} on:submit={grantCode} on:deny={() => showAuthorize = false} />

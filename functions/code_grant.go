@@ -10,6 +10,12 @@ import (
 	"github.com/google/uuid"
 )
 
+type codeGrantResp struct {
+	ClientId    string `json:"client_id"`
+	RederictUri string `json:"redirect_uri"`
+	Success     bool   `json:"success"`
+}
+
 func CodeGrant(w http.ResponseWriter, r *http.Request) {
 	OnlyPost(w, r, codeGrant)
 }
@@ -41,8 +47,13 @@ func codeGrant(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	redirect := fmt.Sprintf("%s?code=%s", existingClient.RedirectUri, au.Code)
-	http.Redirect(w, r, redirect, http.StatusFound)
+	resp := codeGrantResp{
+		ClientId:    existingClient.ClientId,
+		RederictUri: fmt.Sprintf("%s?code=%s", existingClient.RedirectUri, au.Code),
+		Success:     true,
+	}
+	w.Header().Add("Content-Type", "application/json; charset=utf-8")
+	json.NewEncoder(w).Encode(resp)
 }
 
 func parseCodeGrantParams(body io.ReadCloser) params {
