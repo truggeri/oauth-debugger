@@ -2,7 +2,22 @@ server:
 	go run cmd/server/main.go
 
 # ==============================================================================
-# Modules support
+# Docker
+
+docker-build:
+	docker build -t oauthdebugger .
+
+docker-run:
+	docker run --name oauthdebugger --rm -p 8090:8090 oauthdebugger:latest
+
+deploy-build:
+	docker build -t oad-deploy --file deploy.Dockerfile .
+
+deploy-run: deploy-build
+	docker run -it --name dply --rm -e "GCP-PROJECT=$(GCP-PROJECT)" -e "GCP-ACCOUNT=$(GCP-ACCOUNT)" -v secrets:/secrets oad-deploy
+
+# ==============================================================================
+# Go Modules support
 
 deps-reset:
 	git checkout -- go.mod
