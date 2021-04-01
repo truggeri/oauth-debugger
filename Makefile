@@ -63,4 +63,9 @@ gcp-deploy-code-grant: gcp-authorize
 	
 gcp-deploy-token: gcp-authorize
 	$(call gcp_deploy,token,Token)
-	
+
+# ==============================================================================
+# Front end
+
+firebase-deploy:
+	firebase deploy --only hosting:outh-debugger
