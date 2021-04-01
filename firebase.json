@@ -66,6 +66,15 @@
         ]
       },
       {
+        "source": "**/@(android|apple|favicon|site)*.@(ico|png|webmanifest)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=1209600"
+          }
+        ]
+      },
+      {
         "source": "**/*.@(jpg|jpeg|gif|png|svg)",
         "headers": [
           {
