@@ -13,11 +13,8 @@ const provide = new webpack.ProvidePlugin({
 	CONFIG: path.resolve(__dirname, prod ? "src/config/production.js" : "src/config/dev.js")
 });
 
-module.exports = {
-	entry: {
-		bundle: ["./src/main.js"]
-	},
-	resolve: {
+const svelteConfig = {
+	resolver: {
 		alias: {
 			svelte: path.resolve("node_modules", "svelte")
 		},
@@ -54,13 +51,12 @@ module.exports = {
 				]
 			},
 			{
-        test: /\.tsx?$/,
-        use: "ts-loader",
-        exclude: /node_modules/,
-      }
+				test: /\.tsx?$/,
+				use: "ts-loader",
+				exclude: /node_modules/,
+			}
 		]
 	},
-	mode,
 	plugins: [
 		new MiniCssExtractPlugin({
 			filename: "[name].css"
@@ -68,5 +64,20 @@ module.exports = {
 		provide,
 		define
 	],
-	devtool: prod ? false: "source-map"
-};
+	devtool: prod ? false: "source-map",
+}
+
+module.exports = [
+	{
+		entry: {
+			login: ["./src/login.js"],
+			setup: ["./src/setup.js"],
+		},
+		resolve: svelteConfig.resolver,
+		output: svelteConfig.output,
+		module: svelteConfig.module,
+		mode,
+		plugins: svelteConfig.plugins,
+		devtool: svelteConfig.devtool,
+	},
+];
