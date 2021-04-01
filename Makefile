@@ -14,7 +14,12 @@ deploy-build:
 	docker build -t oad-deploy --file deploy.Dockerfile .
 
 deploy-run: deploy-build
-	docker run -it --name dply --rm -e "GCP-PROJECT=$(GCP-PROJECT)" -e "GCP-ACCOUNT=$(GCP-ACCOUNT)" -v secrets:/secrets oad-deploy
+	export SECRETS_DIR=`pwd`/secrets
+	docker run -it --entrypoint="/bin/bash" --name dply --rm -e "GCP_PROJECT=$(GCP_PROJECT)" -e "GCP_ACCOUNT=$(GCP_ACCOUNT)" -v $(SECRETS_DIR):/secrets oad-deploy
+
+deploy-all: deploy-build
+	export SECRETS_DIR=`pwd`/secrets
+	docker run --name dply --rm -e "GCP_PROJECT=$(GCP_PROJECT)" -e "GCP_ACCOUNT=$(GCP_ACCOUNT)" -v $(SECRETS_DIR):/secrets oad-deploy
 
 # ==============================================================================
 # Go Modules support
@@ -44,11 +49,11 @@ list:
 # GCP
 
 define gcp_deploy
-  gcloud functions deploy $(1) --entry-point=$(2) --project=$(GCP-PROJECT) --allow-unauthenticated --region=$(REGION) --runtime $(RUNTIME) --trigger-http --memory=$(MEM) --env-vars-file=/secrets/.env.yaml
+  gcloud functions deploy $(1) --entry-point=$(2) --project=$(GCP_PROJECT) --allow-unauthenticated --region=$(REGION) --runtime $(RUNTIME) --trigger-http --memory=$(MEM) --env-vars-file=/secrets/.env.yaml
 endef
 
 gcp-authorize:
-	gcloud auth activate-service-account $(GCP-ACCOUNT) --key-file=/secrets/key.json
+	gcloud auth activate-service-account $(GCP_ACCOUNT) --key-file=/secrets/key.json
 
 gcp-deploy-all: gcp-deploy-authorize gcp-deploy-create-client gcp-deploy-code-grant gcp-deploy-token
 
