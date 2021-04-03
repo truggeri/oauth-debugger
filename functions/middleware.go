@@ -1,7 +1,9 @@
 package oauthdebugger
 
 import (
+	"fmt"
 	"net/http"
+	"time"
 )
 
 // Handler Type for http response handler function
@@ -34,4 +36,24 @@ func addSecurityHeaders(w http.ResponseWriter) {
 	w.Header().Add("X-Frame-Options", "DENY")
 	w.Header().Add("X-XSS-Protection", "1; mode=block")
 	w.Header().Add("Content-Security-Policy", "font-src 'self'; frame-src 'none'; img-src 'self'; media-src 'none'; object-src 'none';")
+}
+
+// UseCsrfCookie adds CSRF cookie to the response
+func UseCsrfCookie(w http.ResponseWriter, r *http.Request) {
+	expire := time.Now().Add(time.Minute)
+	csrfToken := generateCsrfToken(r)
+	cookie := http.Cookie{
+		Name:       csrfCookieName,
+		Value:      csrfToken,
+		Path:       "/",
+		Domain:     r.Host,
+		Expires:    expire,
+		RawExpires: expire.Format(time.UnixDate),
+		MaxAge:     86400,
+		Secure:     true,
+		HttpOnly:   false,
+		Raw:        fmt.Sprintf("%s=%s", csrfCookieName, csrfToken),
+		Unparsed:   []string{fmt.Sprintf("%s=%s", csrfCookieName, csrfToken)},
+	}
+	http.SetCookie(w, &cookie)
 }

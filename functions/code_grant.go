@@ -27,6 +27,12 @@ func codeGrant(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// TODO make this a _real_ middleware
+	if !(validCsrfToken(r, params.ClientId)) {
+		http.Error(w, "csrf token is invalid", http.StatusUnauthorized)
+		return
+	}
+
 	existingClient, err := getDbClient(params.ClientId)
 	if err != nil || existingClient.empty() {
 		http.Error(w, "client_id does not exist", http.StatusUnauthorized)

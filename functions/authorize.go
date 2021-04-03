@@ -10,6 +10,7 @@ type loginTemplateData struct {
 
 // Authorize prints only on GET request
 func Authorize(w http.ResponseWriter, r *http.Request) {
+	UseCsrfCookie(w, r)
 	OnlyGet(w, r, authorize)
 }
 

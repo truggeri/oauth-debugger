@@ -7,6 +7,10 @@
 
   export let clientId: string;
 
+  function getCookieValue(name: string) {
+    return document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || '';
+  }
+
   let error = false;
   let errorMsg = "";
   let showAuthorize = false
@@ -41,8 +45,9 @@
     const config: RequestInit = {
       method: "POST",
       headers: {
+        "Accept": "application/json",
         "Content-Type": "application/json",
-        "Accept": "application/json"
+        "X-Csrf-Token": getCookieValue("__HOST-token"),
       },
       body: JSON.stringify(req),
     }
