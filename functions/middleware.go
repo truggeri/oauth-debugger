@@ -3,6 +3,7 @@ package oauthdebugger
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -46,7 +47,7 @@ func UseCsrfCookie(w http.ResponseWriter, r *http.Request) {
 		Name:       csrfCookieName,
 		Value:      csrfToken,
 		Path:       "/",
-		Domain:     r.Host,
+		Domain:     os.Getenv("OAD_DOMAIN"),
 		Expires:    expire,
 		RawExpires: expire.Format(time.UnixDate),
 		MaxAge:     86400,
