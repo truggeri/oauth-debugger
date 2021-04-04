@@ -30,10 +30,20 @@
   function handleSuccess(data: any) {
     let uri = data.redirect_uri;
     if (data.success && uri) {
-      window.location.replace(uri);
+      window.location.replace(uri + addState());
     } else {
       handleError("Something is wrong with the redirect uri provided");
     }
+  }
+
+  // @see https://tools.ietf.org/html/rfc6749#section-4.1.1
+  function addState(): string {
+    let params = new URLSearchParams(document.location.search.substring(1));
+    let state = params.get("state");
+    if (state != null) {
+      return `&state=${state}`;
+    }
+    return "";
   }
 
   function grantCode(_event: any) {
