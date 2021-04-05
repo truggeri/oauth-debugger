@@ -41,6 +41,8 @@
   {/if}
 
   <div>
+    <h2>Sign in</h2>
+    <p>Please sign in to continue.</p>
     <form action="#">
       <label for="username">Username</label>
       <input type="text" name="username" placeholder="Username" bind:value={username} class:error="{loginError}">
@@ -48,6 +50,7 @@
       <label for="password">Password</label>
       <input type="password" name="password" placeholder="Password" bind:value={password} class:error="{loginError}">
 
+      <br />
       <button on:click|preventDefault={handleLogin}>Login</button>
     </form> 
   </div>

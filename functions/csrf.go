@@ -13,6 +13,8 @@ import (
 	"time"
 )
 
+// @see https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#hmac-based-token-pattern
+
 const csrfCookieName = "__HOST-token"
 const csrfHeaderName = "X-Csrf-Token"
 const csrfSecretFormat = "%s-|-%d"
