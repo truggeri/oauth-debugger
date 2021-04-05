@@ -79,7 +79,7 @@ paths:
                 type: string
                 example: client_id does not exist
   /oauth/token:
-    get:
+    post:
       tags:
       - oauth2
       summary: Access token request
