@@ -86,3 +86,5 @@ secrets/
 # Go build output
 vendor/
 main
+
+.DS_Store

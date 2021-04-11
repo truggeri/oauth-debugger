@@ -94,3 +94,15 @@ cd functions
 gcloud functions deploy client --allow-unauthenticated --region=us-central1 \
   --runtime go113 --trigger-http --memory=128MB --entry-point=Client
 ```
+
+## Licensing
+
+### Graphics
+
+Graphics are provided by [Twemoji](https://twemoji.twitter.com/). Thank you for providing free SVG graphics.
+
+```text
+Copyright 2020 Twitter, Inc and other contributors
+Code licensed under the MIT License: http://opensource.org/licenses/MIT
+Graphics licensed under CC-BY 4.0: https://creativecommons.org/licenses/by/4.0/
+```

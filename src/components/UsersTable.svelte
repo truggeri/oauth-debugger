@@ -5,7 +5,7 @@
 <div>
   <h2>Provided Users</h2>
   <p>
-    We have provided you with three unique logins to help you test your application. Each has their
+    We have provided you with three unique users to help you test your application. Each has their
     username, password and unique data enumerated below for your convenience.
   </p>
   <table>
@@ -13,7 +13,6 @@
       <tr>
         <th>Username</th>
         <th>Password</th>
-        <th>User Data</th>
       </tr>
     </thead>
     <tbody>
@@ -21,7 +20,6 @@
         <tr>
           <td>{ username }</td>
           <td>{ password }</td>
-          <td></td>
         </tr>
       {/each}
     </tbody>
