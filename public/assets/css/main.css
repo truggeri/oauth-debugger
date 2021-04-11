@@ -1,0 +1,155 @@
+:root {
+  --color-primary: rgb(255, 172, 51);
+  --color-alt: rgb(193, 105, 79);
+  --color-contrast: rgb(32, 43, 56);
+  --color-mute: rgb(170, 184, 194);
+}
+
+.center {
+  text-align: center;
+}
+
+.divide-right {
+  border-right: 1px solid gray;
+}
+
+@media (max-width: 700px) {
+  .divide-right {
+    border-bottom: 1px solid gray;
+    border-right: 0px;
+    padding-bottom: 8px;
+  }
+}
+
+.icon-link {
+  min-width: 200px;
+}
+
+.flx-container {
+  display: flex;
+  flex-direction: row;
+}
+
+@media (max-width: 700px) {
+  .flx-container {
+    flex-direction: column;
+  }
+}
+
+.flx-reverse {
+  display: flex;
+  flex-direction: row;
+}
+
+@media (max-width: 700px) {
+  .flx-reverse {
+    flex-direction: column-reverse;
+  }
+}
+
+.flx-1 {
+  flex: 1;
+}
+
+.font-md {
+  font-size: 1.15rem;
+}
+
+.font-lg {
+  font-size: 1.25rem;
+}
+
+.pad-sm {
+  padding: 8px;
+}
+
+.pad-md {
+  padding: 16px;
+}
+
+.pad-lg {
+  padding: 32px;
+}
+
+a {
+  color: var(--color-contrast);
+}
+
+a:hover {
+  color: var(--color-alt);
+}
+
+@media (prefers-color-scheme: dark) {
+  a {
+    color: var(--color-primary);
+  }
+
+  a:hover {
+    color: var(--color-alt);
+  }
+}
+
+.action {
+  background-color: var(--color-primary);
+  color: var(--color-contrast);
+}
+
+.action:hover {
+  text-decoration: none;
+}
+
+button.action {
+  margin-top: 16px;
+}
+
+button.action:hover {
+  background-color: var(--color-alt);
+  color: white;
+}
+
+footer {
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+h1 {
+  font-size: 64px;
+  text-align: right;
+}
+
+.ribbon {
+  align-items: center;
+  background-color: var(--color-primary);
+  color: var(--color-contrast);
+  display: flex;
+  font-weight: 700;
+  height: 64px;
+  justify-content: center;
+  left: 0px;
+  margin-left: -100px;
+  margin-top: 30px;
+  position: absolute;
+  top: 0px;
+  transform: rotate(-30deg);
+  width: 400px;
+}
+
+a.ribbon {
+  color: var(--color-contrast);
+}
+
+a.ribbon:hover {
+  color: var(--color-alt);
+}
+
+.rotate-image {
+  transform: rotate(5deg);
+}
+
+@media (max-width: 700px) {
+  .rotate-image {
+    height: 100px;
+    transform: rotate(5deg);
+    width: 100px;
+  }
+}

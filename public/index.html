@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="canonical" href="https://oauth-debugger.truggeri.com"/>
 
-    <title>OAuth Debugger</title>
+    <title>OAuth Tester</title>
 
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -16,21 +16,78 @@
     <meta name="theme-color" content="#2e2e33">
     <meta name="msapplication-TileColor" content="#2e2e33">
 
-    <link rel="preload stylesheet" href="/water.css" as="style">
+    <link rel="preload stylesheet" href="/assets/css/water.css" as="style">
+    <link rel="preload stylesheet" href="/assets/css/main.css" as="style">
   </head>
   <body>
+    <div class="ribbon font-lg">
+      <a href="/setup" class="action">Get Started Today</a>
+    </div>
 
-    <h1>OAuth Debugger</h1>
+    <div class="flx-reverse">
+      <div class="flx-1">
+        <h1 class="pad-lg">Test Your OAuth2 Integration</h1>
+      </div>
+      <div class="flx-1" style="text-align: right;">
+        <img class="rotate-image" src="/assets/twemoji/1F510.svg" alt="Lock and key" width="320px" height="320px">
+      </div>
+    </div>
+    <div>
+      <p class="font-lg pad-lg">
+        We are here to help test your OAuth2 integrations by providing a mock authorization and resource server.
+        Don't test blindly against real resources, start and test your integrations here.
+      </p>
+    </div>
 
-    <p>
-      TODO - Introduction text. Use the following information for testing your application.
-    </p>
-    <br />
+    <hr />
 
-    <div id="main-app"></div>
+    <section class="pad-lg">
+      <h2 class="center">What is OAuth2?</h2>
+      <p class="font-md pad-md">
+        OAuth2 is a web standard for resource sharing. It provides a secure way for users to grant access to your application to access information about them.
+        It's commonly used for Single Sign On (SSO) so a user can use their favorite website to log into your web app.
+      </p>
+      <div class="flx-container pad-md">
+        <div class="center icon-link flx-1 divide-right">
+          <a href="https://oauth.net/2/" target="blank">
+            <div><img src="/assets/twemoji/1f393.svg" width="100px" height="100px" alt="Learn" /></div>
+            <div class="pad-md">Learn More</div>
+          </a>
+        </div>
+        <div class="center icon-link  flx-1 divide-right">
+          <a href="https://tools.ietf.org/html/rfc6749" target="blank">
+            <div><img src="/assets/twemoji/1f4d6.svg" width="100px" height="100px" alt="Book" /></div>
+            <div class="pad-md">Read the Spec</div>
+          </a>
+        </div>
+        <div class="center icon-link  flx-1">
+          <a href="https://www.youtube.com/watch?v=996OiexHze0" target="blank">
+            <div><img src="/assets/twemoji/1f4fc.svg" width="100px" height="100px" alt="Video" /></div>
+            <div class="pad-md">Watch an Overview</div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <hr />
+
+    <section class="pad-lg">
+      <h2 class="center">How We Help</h2>
+      <p class="font-md">
+        Our application makes it easier to implement an OAuth2 integration in your web app by giving you the tools to test it.
+        Coding an integration can be tricky to get right the first time. We offer a safe place to test your code to
+        give you the confidence to know it's working.
+      </p>
+      <div class="center">
+        <a href="/setup">
+          <button class="action font-lg">Get Started</button>
+        </a>
+      </div>
+    </section>
 
     <footer>
-      This is the footer
+      Created by <a href="https://truggeri.com/" target="blank">@truggeri</a> ©2021 |
+       View on <a href="https://github.com/truggeri/oauth-debugger" target="blank">Github</a>
     </footer>
   </body>
 </html>
