@@ -34,11 +34,11 @@
   }
 </style>
 
-<div>
-  {#if setupError}
-    <Alert klass="error" boldMsg="Error" message={errorMessage} />
-  {/if}
+{#if setupError}
+  <Alert klass="error" boldMsg="Error" message={errorMessage} />
+{/if}
 
+<div class="flx-center">
   <form action="#">
     <label for="name">Application Name</label>
     <input type="text" name="name" placeholder="Unique Name" bind:value={name} class:error="{setupError}">
@@ -46,6 +46,6 @@
     <label for="redirect_uri">Redirect URI</label>
     <input type="text" name="redirect_uri" placeholder="https://" bind:value={redirect_uri} class:error="{setupError}">
 
-    <br /><button on:click|preventDefault={handleSubmit}>Generate</button>
+    <br /><button on:click|preventDefault={handleSubmit} class="action">Generate</button>
   </form> 
 </div>

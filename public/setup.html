@@ -19,22 +19,33 @@
     <link rel="preload" href="/setup.js" as="script">
     <link rel="preload stylesheet" href="/assets/css/water.css" as="style">
     <link rel="preload stylesheet" href="/setup.css" as="style">
+    <link rel="preload stylesheet" href="/assets/css/main.css" as="style">
   </head>
   <body>
 
-    <h1>OAuth Debugger</h1>
+    <h1>Get Started</h1>
 
     <p>
-      TODO - Introduction text. Use the following information for testing your application.
+      In order to get started, we will need to create a new Client registration.
+      You can do so below by providing a name for your application and a redirect uri.
+      This uri will be the callback endpoint used to return information to your application.
+      For more information, see our <a href="/learn">learning page</a>.
     </p>
     <br />
 
     <div id="setup-app"></div>
     <script async src="/setup.js"></script>
 
+    <noscript>
+      <p>
+        This webpage was intended to be used with Javascript enabled. Without script support, we
+        cannot offer the functionallity of this application.
+      </p>
+    </noscript>
+
     <footer>
       Created by <a href="https://truggeri.com/" target="blank">@truggeri</a> ©2021 |
-       View on <a href="https://github.com/truggeri/oauth-debugger" target="blank">Github</a>
+      View on <a href="https://github.com/truggeri/oauth-debugger" target="blank">Github</a>
     </footer>
   </body>
 </html>
