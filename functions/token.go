@@ -32,7 +32,7 @@ func Token(w http.ResponseWriter, r *http.Request) {
 		return nil
 	}
 
-	wrapMiddleware(mw, handler)(context.TODO(), w, r)
+	wrapMiddleware(mw, handler)(r.Context(), w, r)
 }
 
 func token(w http.ResponseWriter, r *http.Request) {

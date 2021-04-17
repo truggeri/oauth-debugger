@@ -18,7 +18,7 @@ func Authorize(w http.ResponseWriter, r *http.Request) {
 		authorize(w, r)
 		return nil
 	}
-	wrapMiddleware(mw, handler)(context.TODO(), w, r)
+	wrapMiddleware(mw, handler)(r.Context(), w, r)
 }
 
 func authorize(w http.ResponseWriter, r *http.Request) {

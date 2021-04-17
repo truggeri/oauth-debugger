@@ -24,7 +24,7 @@ func CodeGrant(w http.ResponseWriter, r *http.Request) {
 		codeGrant(w, r)
 		return nil
 	}
-	wrapMiddleware(mw, handler)(context.TODO(), w, r)
+	wrapMiddleware(mw, handler)(r.Context(), w, r)
 }
 
 func codeGrant(w http.ResponseWriter, r *http.Request) {

@@ -17,7 +17,7 @@ func CreateClient(w http.ResponseWriter, r *http.Request) {
 		createClient(w, r)
 		return nil
 	}
-	wrapMiddleware(mw, handler)(context.TODO(), w, r)
+	wrapMiddleware(mw, handler)(r.Context(), w, r)
 }
 
 func createClient(w http.ResponseWriter, r *http.Request) {
