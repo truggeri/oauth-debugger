@@ -9,7 +9,12 @@ import (
 
 // CreateClient generates and returns client codes
 func CreateClient(w http.ResponseWriter, r *http.Request) {
-	OnlyPost(w, r, createClient)
+	mw := []Middleware{OnlyAllow(http.MethodPost)}
+	handler := func(w http.ResponseWriter, r *http.Request) error {
+		createClient(w, r)
+		return nil
+	}
+	wrapMiddleware(mw, handler)(w, r)
 }
 
 func createClient(w http.ResponseWriter, r *http.Request) {
@@ -28,6 +33,7 @@ func createClient(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Add("Content-Type", "application/json; charset=utf-8")
 	json.NewEncoder(w).Encode(params)
+	return
 }
 
 func parseClientParams(body io.ReadCloser) params {

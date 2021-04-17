@@ -23,7 +23,12 @@ type tokenInfo struct {
 
 // Token Returns authorization token and user info
 func Token(w http.ResponseWriter, r *http.Request) {
-	OnlyPost(w, r, token)
+	mw := []Middleware{OnlyAllow(http.MethodPost)}
+	handler := func(w http.ResponseWriter, r *http.Request) error {
+		token(w, r)
+		return nil
+	}
+	wrapMiddleware(mw, handler)(w, r)
 }
 
 func token(w http.ResponseWriter, r *http.Request) {

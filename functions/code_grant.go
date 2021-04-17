@@ -17,19 +17,18 @@ type codeGrantResp struct {
 }
 
 func CodeGrant(w http.ResponseWriter, r *http.Request) {
-	OnlyPost(w, r, codeGrant)
+	mw := []Middleware{OnlyAllow(http.MethodPost), ValidateCsrfToken()}
+	handler := func(w http.ResponseWriter, r *http.Request) error {
+		codeGrant(w, r)
+		return nil
+	}
+	wrapMiddleware(mw, handler)(w, r)
 }
 
 func codeGrant(w http.ResponseWriter, r *http.Request) {
 	params := parseCodeGrantParams(r.Body)
 	if !validCodeGrant(&params) {
 		http.Error(w, params.message, params.code)
-		return
-	}
-
-	// TODO make this a _real_ middleware
-	if !(validCsrfToken(r, params.ClientId)) {
-		http.Error(w, "csrf token is invalid", http.StatusUnauthorized)
 		return
 	}
 

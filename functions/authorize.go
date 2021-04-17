@@ -10,8 +10,12 @@ type loginTemplateData struct {
 
 // Authorize prints only on GET request
 func Authorize(w http.ResponseWriter, r *http.Request) {
-	UseCsrfCookie(w, r)
-	OnlyGet(w, r, authorize)
+	mw := []Middleware{OnlyAllow(http.MethodGet), SetCsrfCookie()}
+	handler := func(w http.ResponseWriter, r *http.Request) error {
+		authorize(w, r)
+		return nil
+	}
+	wrapMiddleware(mw, handler)(w, r)
 }
 
 func authorize(w http.ResponseWriter, r *http.Request) {

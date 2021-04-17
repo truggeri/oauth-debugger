@@ -1,60 +1,35 @@
 package oauthdebugger
 
 import (
-	"fmt"
 	"net/http"
-	"os"
-	"time"
 )
 
+// Thanks to Ardan Labs for this code
+// https://github.com/ardanlabs/service/blob/master/foundation/web/middleware.go
+// I need to _properly_ import and credit
+
 // Handler Type for http response handler function
-type Handler func(http.ResponseWriter, *http.Request)
+type Handler func(http.ResponseWriter, *http.Request) error
 
-// OnlyGet Blocks all requests except GETs
-func OnlyGet(w http.ResponseWriter, r *http.Request, h Handler) {
-	if r.Method != http.MethodGet {
-		http.Error(w, "", http.StatusMethodNotAllowed)
-		return
+// Middleware is a function designed to run some code before and/or after
+// another Handler. It is designed to remove boilerplate or other concerns not
+// direct to any given Handler.
+type Middleware func(Handler) Handler
+
+// wrapMiddleware creates a new handler by wrapping middleware around a final
+// handler. The middlewares' Handlers will be executed by requests in the order
+// they are provided.
+func wrapMiddleware(mw []Middleware, handler Handler) Handler {
+
+	// Loop backwards through the middleware invoking each one. Replace the
+	// handler with the new wrapped handler. Looping backwards ensures that the
+	// first middleware of the slice is the first to be executed by requests.
+	for i := len(mw) - 1; i >= 0; i-- {
+		h := mw[i]
+		if h != nil {
+			handler = h(handler)
+		}
 	}
 
-	addSecurityHeaders(w)
-	h(w, r)
-}
-
-// OnlyPost Blocks all requests except POSTs
-func OnlyPost(w http.ResponseWriter, r *http.Request, h Handler) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "", http.StatusMethodNotAllowed)
-		return
-	}
-
-	addSecurityHeaders(w)
-	h(w, r)
-}
-
-func addSecurityHeaders(w http.ResponseWriter) {
-	w.Header().Add("X-Content-Type-Options", "nosniff")
-	w.Header().Add("X-Frame-Options", "DENY")
-	w.Header().Add("X-XSS-Protection", "1; mode=block")
-	w.Header().Add("Content-Security-Policy", "font-src 'self'; frame-src 'none'; img-src 'self'; media-src 'none'; object-src 'none';")
-}
-
-// UseCsrfCookie adds CSRF cookie to the response
-func UseCsrfCookie(w http.ResponseWriter, r *http.Request) {
-	expire := time.Now().Add(time.Minute)
-	csrfToken := generateCsrfToken(r)
-	cookie := http.Cookie{
-		Name:       csrfCookieName,
-		Value:      csrfToken,
-		Path:       "/",
-		Domain:     os.Getenv("OAD_DOMAIN"),
-		Expires:    expire,
-		RawExpires: expire.Format(time.UnixDate),
-		MaxAge:     86400,
-		Secure:     true,
-		HttpOnly:   false,
-		Raw:        fmt.Sprintf("%s=%s", csrfCookieName, csrfToken),
-		Unparsed:   []string{fmt.Sprintf("%s=%s", csrfCookieName, csrfToken)},
-	}
-	http.SetCookie(w, &cookie)
+	return handler
 }
