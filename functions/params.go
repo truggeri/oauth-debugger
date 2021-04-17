@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"net/url"
 	"time"
-
-	ardan "github.com/ardanlabs/service/foundation/web"
 )
 
 type params struct {
@@ -32,8 +30,8 @@ type contextKey string
 
 var ParamKey contextKey = "params"
 
-func ParamsFromQuery() ardan.Middleware {
-	m := func(handler ardan.Handler) ardan.Handler {
+func ParamsFromQuery() Middleware {
+	m := func(handler Handler) Handler {
 		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 			p := parse(r.URL.Query())
 			return handler(context.WithValue(ctx, ParamKey, p), w, r)
@@ -43,8 +41,8 @@ func ParamsFromQuery() ardan.Middleware {
 	return m
 }
 
-func ParamsFromBody() ardan.Middleware {
-	m := func(handler ardan.Handler) ardan.Handler {
+func ParamsFromBody() Middleware {
+	m := func(handler Handler) Handler {
 		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 			var p params
 			if err := json.NewDecoder(r.Body).Decode(&p); err != nil {

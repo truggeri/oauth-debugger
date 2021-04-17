@@ -12,8 +12,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	ardan "github.com/ardanlabs/service/foundation/web"
 )
 
 // @see https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#hmac-based-token-pattern
@@ -21,8 +19,8 @@ const csrfCookieName = "__HOST-token"
 const csrfHeaderName = "X-Csrf-Token"
 const csrfSecretFormat = "%s-|-%d"
 
-func SetCsrfCookie() ardan.Middleware {
-	m := func(handler ardan.Handler) ardan.Handler {
+func SetCsrfCookie() Middleware {
+	m := func(handler Handler) Handler {
 		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 			expire := time.Now().Add(time.Minute)
 			csrfToken := generateCsrfToken(r)
@@ -68,8 +66,8 @@ func hmacToken(value string) hash.Hash {
 	return h
 }
 
-func ValidateCsrfToken() ardan.Middleware {
-	m := func(handler ardan.Handler) ardan.Handler {
+func ValidateCsrfToken() Middleware {
+	m := func(handler Handler) Handler {
 		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 			if len(r.Header[csrfHeaderName]) == 0 || r.Header[csrfHeaderName][0] == "" {
 				http.Error(w, "csrf token is missing", http.StatusUnauthorized)

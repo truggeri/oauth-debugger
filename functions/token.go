@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-
-	ardan "github.com/ardanlabs/service/foundation/web"
 )
 
 type tokenResponse struct {
@@ -26,7 +24,7 @@ type tokenInfo struct {
 
 // Token Returns authorization token and user info
 func Token(w http.ResponseWriter, r *http.Request) {
-	mw := []ardan.Middleware{OnlyAllow(http.MethodPost), ParamsFromQuery()}
+	mw := []Middleware{OnlyAllow(http.MethodPost), ParamsFromQuery()}
 	handler := func(_ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 		token(ctx, w, r)
 		return nil

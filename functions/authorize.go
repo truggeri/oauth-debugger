@@ -3,8 +3,6 @@ package oauthdebugger
 import (
 	"context"
 	"net/http"
-
-	ardan "github.com/ardanlabs/service/foundation/web"
 )
 
 type loginTemplateData struct {
@@ -13,7 +11,7 @@ type loginTemplateData struct {
 
 // Authorize prints only on GET request
 func Authorize(w http.ResponseWriter, r *http.Request) {
-	mw := []ardan.Middleware{OnlyAllow(http.MethodGet), SetCsrfCookie(), ParamsFromQuery()}
+	mw := []Middleware{OnlyAllow(http.MethodGet), SetCsrfCookie(), ParamsFromQuery()}
 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 		authorize(ctx, w, r)
 		return nil

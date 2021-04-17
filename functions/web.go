@@ -3,13 +3,11 @@ package oauthdebugger
 import (
 	"context"
 	"net/http"
-
-	ardan "github.com/ardanlabs/service/foundation/web"
 )
 
 // AddSecurityHeaders adds basic security headers to the response
-func AddSecurityHeaders() ardan.Middleware {
-	m := func(handler ardan.Handler) ardan.Handler {
+func AddSecurityHeaders() Middleware {
+	m := func(handler Handler) Handler {
 		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 			w.Header().Add("X-Content-Type-Options", "nosniff")
 			w.Header().Add("X-Frame-Options", "DENY")
@@ -23,8 +21,8 @@ func AddSecurityHeaders() ardan.Middleware {
 }
 
 // OnlyAllow Blocks handler from executing if request doesn't match method
-func OnlyAllow(method string) ardan.Middleware {
-	m := func(handler ardan.Handler) ardan.Handler {
+func OnlyAllow(method string) Middleware {
+	m := func(handler Handler) Handler {
 		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 			if r.Method != method {
 				http.Error(w, "", http.StatusMethodNotAllowed)

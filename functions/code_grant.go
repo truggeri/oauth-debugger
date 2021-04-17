@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"time"
 
-	ardan "github.com/ardanlabs/service/foundation/web"
 	"github.com/google/uuid"
 )
 
@@ -18,7 +17,7 @@ type codeGrantResp struct {
 }
 
 func CodeGrant(w http.ResponseWriter, r *http.Request) {
-	mw := []ardan.Middleware{OnlyAllow(http.MethodPost), ParamsFromBody(), ValidateCsrfToken()}
+	mw := []Middleware{OnlyAllow(http.MethodPost), ParamsFromBody(), ValidateCsrfToken()}
 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 		codeGrant(ctx, w, r)
 		return nil

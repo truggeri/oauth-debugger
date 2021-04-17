@@ -5,13 +5,11 @@ import (
 	"encoding/json"
 	"net/http"
 	"time"
-
-	ardan "github.com/ardanlabs/service/foundation/web"
 )
 
 // CreateClient generates and returns client codes
 func CreateClient(w http.ResponseWriter, r *http.Request) {
-	mw := []ardan.Middleware{OnlyAllow(http.MethodPost), ParamsFromBody()}
+	mw := []Middleware{OnlyAllow(http.MethodPost), ParamsFromBody()}
 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 		createClient(ctx, w, r)
 		return nil
