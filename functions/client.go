@@ -3,7 +3,6 @@ package oauthdebugger
 import (
 	"context"
 	"encoding/json"
-	"io"
 	"net/http"
 	"time"
 
@@ -12,16 +11,16 @@ import (
 
 // CreateClient generates and returns client codes
 func CreateClient(w http.ResponseWriter, r *http.Request) {
-	mw := []ardan.Middleware{OnlyAllow(http.MethodPost)}
+	mw := []ardan.Middleware{OnlyAllow(http.MethodPost), ParamsFromBody()}
 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-		createClient(w, r)
+		createClient(ctx, w, r)
 		return nil
 	}
 	wrapMiddleware(mw, handler)(r.Context(), w, r)
 }
 
-func createClient(w http.ResponseWriter, r *http.Request) {
-	params := parseClientParams(r.Body)
+func createClient(ctx context.Context, w http.ResponseWriter, r *http.Request) {
+	params := ctx.Value(ParamKey).(params)
 	if !validClient(&params) {
 		http.Error(w, params.message, params.code)
 		return
@@ -36,14 +35,6 @@ func createClient(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Add("Content-Type", "application/json; charset=utf-8")
 	json.NewEncoder(w).Encode(params)
-}
-
-func parseClientParams(body io.ReadCloser) params {
-	var p params
-	if err := json.NewDecoder(body).Decode(&p); err != nil {
-		p.code, p.message = http.StatusBadRequest, err.Error()
-	}
-	return p
 }
 
 func validClient(p *params) bool {

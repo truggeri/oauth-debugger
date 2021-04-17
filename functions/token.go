@@ -26,17 +26,17 @@ type tokenInfo struct {
 
 // Token Returns authorization token and user info
 func Token(w http.ResponseWriter, r *http.Request) {
-	mw := []ardan.Middleware{OnlyAllow(http.MethodPost)}
+	mw := []ardan.Middleware{OnlyAllow(http.MethodPost), ParamsFromQuery()}
 	handler := func(_ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-		token(w, r)
+		token(ctx, w, r)
 		return nil
 	}
 
 	wrapMiddleware(mw, handler)(r.Context(), w, r)
 }
 
-func token(w http.ResponseWriter, r *http.Request) {
-	params := parse(r.URL.Query())
+func token(ctx context.Context, w http.ResponseWriter, r *http.Request) {
+	params := ctx.Value(ParamKey).(params)
 	if !validToken(&params) {
 		http.Error(w, params.message, params.code)
 		return

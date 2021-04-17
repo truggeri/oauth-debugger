@@ -1,8 +1,13 @@
 package oauthdebugger
 
 import (
+	"context"
+	"encoding/json"
+	"net/http"
 	"net/url"
 	"time"
+
+	ardan "github.com/ardanlabs/service/foundation/web"
 )
 
 type params struct {
@@ -21,6 +26,35 @@ type params struct {
 type paramError struct {
 	code    int
 	message string
+}
+
+type contextKey string
+
+var ParamKey contextKey = "params"
+
+func ParamsFromQuery() ardan.Middleware {
+	m := func(handler ardan.Handler) ardan.Handler {
+		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+			p := parse(r.URL.Query())
+			return handler(context.WithValue(ctx, ParamKey, p), w, r)
+		}
+		return h
+	}
+	return m
+}
+
+func ParamsFromBody() ardan.Middleware {
+	m := func(handler ardan.Handler) ardan.Handler {
+		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+			var p params
+			if err := json.NewDecoder(r.Body).Decode(&p); err != nil {
+				p.code, p.message = http.StatusBadRequest, err.Error()
+			}
+			return handler(context.WithValue(ctx, ParamKey, p), w, r)
+		}
+		return h
+	}
+	return m
 }
 
 func (p params) client() Client {

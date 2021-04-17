@@ -72,12 +72,13 @@ func ValidateCsrfToken() ardan.Middleware {
 	m := func(handler ardan.Handler) ardan.Handler {
 		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 			if len(r.Header[csrfHeaderName]) == 0 || r.Header[csrfHeaderName][0] == "" {
-				http.Error(w, "csrf token is invalid", http.StatusUnauthorized)
+				http.Error(w, "csrf token is missing", http.StatusUnauthorized)
 				return nil
 			}
 
 			headerValues := strings.Split(r.Header[csrfHeaderName][0], "-|-")
 			given_time, _ := strconv.Atoi(headerValues[1])
+			clientId := ctx.Value(ParamKey).(params).ClientId
 			expected := hmacToken(fmt.Sprintf(csrfSecretFormat, clientId, given_time))
 			exp := strings.Trim(hex.EncodeToString(expected.Sum(nil)), " \r\n")
 			gvn := strings.Trim(headerValues[0], " \r\n")

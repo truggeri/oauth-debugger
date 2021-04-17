@@ -13,16 +13,16 @@ type loginTemplateData struct {
 
 // Authorize prints only on GET request
 func Authorize(w http.ResponseWriter, r *http.Request) {
-	mw := []ardan.Middleware{OnlyAllow(http.MethodGet), SetCsrfCookie()}
+	mw := []ardan.Middleware{OnlyAllow(http.MethodGet), SetCsrfCookie(), ParamsFromQuery()}
 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-		authorize(w, r)
+		authorize(ctx, w, r)
 		return nil
 	}
 	wrapMiddleware(mw, handler)(r.Context(), w, r)
 }
 
-func authorize(w http.ResponseWriter, r *http.Request) {
-	params := parse(r.URL.Query())
+func authorize(ctx context.Context, w http.ResponseWriter, r *http.Request) {
+	params := ctx.Value(ParamKey).(params)
 	if !validAuthorize(&params) {
 		http.Error(w, params.message, params.code)
 		return
