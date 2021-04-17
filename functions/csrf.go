@@ -1,6 +1,7 @@
 package oauthdebugger
 
 import (
+	"context"
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
@@ -11,6 +12,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	ardan "github.com/ardanlabs/service/foundation/web"
 )
 
 // @see https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#hmac-based-token-pattern
@@ -18,9 +21,9 @@ const csrfCookieName = "__HOST-token"
 const csrfHeaderName = "X-Csrf-Token"
 const csrfSecretFormat = "%s-|-%d"
 
-func SetCsrfCookie() Middleware {
-	m := func(handler Handler) Handler {
-		h := func(w http.ResponseWriter, r *http.Request) error {
+func SetCsrfCookie() ardan.Middleware {
+	m := func(handler ardan.Handler) ardan.Handler {
+		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 			expire := time.Now().Add(time.Minute)
 			csrfToken := generateCsrfToken(r)
 			cookie := http.Cookie{
@@ -37,7 +40,7 @@ func SetCsrfCookie() Middleware {
 				Unparsed:   []string{fmt.Sprintf("%s=%s", csrfCookieName, csrfToken)},
 			}
 			http.SetCookie(w, &cookie)
-			return handler(w, r)
+			return handler(ctx, w, r)
 		}
 		return h
 	}
@@ -65,9 +68,9 @@ func hmacToken(value string) hash.Hash {
 	return h
 }
 
-func ValidateCsrfToken() Middleware {
-	m := func(handler Handler) Handler {
-		h := func(w http.ResponseWriter, r *http.Request) error {
+func ValidateCsrfToken() ardan.Middleware {
+	m := func(handler ardan.Handler) ardan.Handler {
+		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 			if len(r.Header[csrfHeaderName]) == 0 || r.Header[csrfHeaderName][0] == "" {
 				http.Error(w, "csrf token is invalid", http.StatusUnauthorized)
 				return nil
@@ -83,7 +86,7 @@ func ValidateCsrfToken() Middleware {
 				http.Error(w, "csrf token is invalid", http.StatusUnauthorized)
 				return nil
 			}
-			return handler(w, r)
+			return handler(ctx, w, r)
 		}
 		return h
 	}

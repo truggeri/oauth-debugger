@@ -1,12 +1,14 @@
 package oauthdebugger
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"time"
 
+	ardan "github.com/ardanlabs/service/foundation/web"
 	"github.com/google/uuid"
 )
 
@@ -17,12 +19,12 @@ type codeGrantResp struct {
 }
 
 func CodeGrant(w http.ResponseWriter, r *http.Request) {
-	mw := []Middleware{OnlyAllow(http.MethodPost), ValidateCsrfToken()}
-	handler := func(w http.ResponseWriter, r *http.Request) error {
+	mw := []ardan.Middleware{OnlyAllow(http.MethodPost), ValidateCsrfToken()}
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 		codeGrant(w, r)
 		return nil
 	}
-	wrapMiddleware(mw, handler)(w, r)
+	wrapMiddleware(mw, handler)(context.TODO(), w, r)
 }
 
 func codeGrant(w http.ResponseWriter, r *http.Request) {

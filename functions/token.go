@@ -1,9 +1,12 @@
 package oauthdebugger
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"net/http"
+
+	ardan "github.com/ardanlabs/service/foundation/web"
 )
 
 type tokenResponse struct {
@@ -23,12 +26,13 @@ type tokenInfo struct {
 
 // Token Returns authorization token and user info
 func Token(w http.ResponseWriter, r *http.Request) {
-	mw := []Middleware{OnlyAllow(http.MethodPost)}
-	handler := func(w http.ResponseWriter, r *http.Request) error {
+	mw := []ardan.Middleware{OnlyAllow(http.MethodPost)}
+	handler := func(_ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 		token(w, r)
 		return nil
 	}
-	wrapMiddleware(mw, handler)(w, r)
+
+	wrapMiddleware(mw, handler)(context.TODO(), w, r)
 }
 
 func token(w http.ResponseWriter, r *http.Request) {

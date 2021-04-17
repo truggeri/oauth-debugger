@@ -1,20 +1,23 @@
 package oauthdebugger
 
 import (
+	"context"
 	"encoding/json"
 	"io"
 	"net/http"
 	"time"
+
+	ardan "github.com/ardanlabs/service/foundation/web"
 )
 
 // CreateClient generates and returns client codes
 func CreateClient(w http.ResponseWriter, r *http.Request) {
-	mw := []Middleware{OnlyAllow(http.MethodPost)}
-	handler := func(w http.ResponseWriter, r *http.Request) error {
+	mw := []ardan.Middleware{OnlyAllow(http.MethodPost)}
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 		createClient(w, r)
 		return nil
 	}
-	wrapMiddleware(mw, handler)(w, r)
+	wrapMiddleware(mw, handler)(context.TODO(), w, r)
 }
 
 func createClient(w http.ResponseWriter, r *http.Request) {
@@ -33,7 +36,6 @@ func createClient(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Add("Content-Type", "application/json; charset=utf-8")
 	json.NewEncoder(w).Encode(params)
-	return
 }
 
 func parseClientParams(body io.ReadCloser) params {
