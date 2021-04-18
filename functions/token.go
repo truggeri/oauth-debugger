@@ -24,7 +24,7 @@ type tokenInfo struct {
 
 // Token Returns authorization token and user info
 func Token(w http.ResponseWriter, r *http.Request) {
-	mw := []Middleware{OnlyAllow(http.MethodPost), ParamsFromQuery()}
+	mw := []Middleware{OnlyAllow(http.MethodPost), ParamsFromBody()}
 	handler := func(_ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 		token(ctx, w, r)
 		return nil
@@ -111,5 +111,7 @@ func respondWithJson(w http.ResponseWriter, au AuthUser) {
 	}
 
 	w.Header().Add("Content-Type", "application/json; charset=utf-8")
+	w.Header().Add("Cache-Control", "no-store")
+	w.Header().Add("Pragma", "no-cache")
 	json.NewEncoder(w).Encode(resp)
 }

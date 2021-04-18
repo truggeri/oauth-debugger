@@ -44,6 +44,17 @@ func ParamsFromQuery() Middleware {
 func ParamsFromBody() Middleware {
 	m := func(handler Handler) Handler {
 		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+			p := parse(r.PostForm)
+			return handler(context.WithValue(ctx, ParamKey, p), w, r)
+		}
+		return h
+	}
+	return m
+}
+
+func ParamsFromJson() Middleware {
+	m := func(handler Handler) Handler {
+		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 			var p params
 			if err := json.NewDecoder(r.Body).Decode(&p); err != nil {
 				p.code, p.message = http.StatusBadRequest, err.Error()

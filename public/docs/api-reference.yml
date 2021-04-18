@@ -85,54 +85,19 @@ paths:
       summary: Access token request
       description: Client now makes a request for a token giving their ClientId and ClientSecret
       operationId: token
-      parameters:
-      - name: client_id
-        in: query
-        description: Status values that need to be considered for filter
+      requestBody:
         required: true
-        style: form
-        explode: false
-        schema:
-          type: string
-      - name: client_secret
-        in: query
-        description: Status values that need to be considered for filter
-        required: true
-        style: form
-        explode: false
-        schema:
-          type: string
-      - name: grant_type
-        in: query
-        description: Static value of 'authorization_code'
-        required: true
-        style: form
-        explode: false
-        schema:
-          type: string
-      - name: code
-        in: query
-        description: Code value provided by xxx
-        required: true
-        style: form
-        explode: false
-        schema:
-          type: string
-      - name: redirect_uri
-        in: query
-        description: Redirect uri
-        required: true
-        style: form
-        explode: false
-        schema:
-          type: string
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenReq'
       responses:
         200:
           description: Valid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Token'
+                $ref: '#/components/schemas/TokenResp'
         400:
           description: Missing required param
           content:
@@ -149,38 +114,60 @@ paths:
                 example: client_id does not exist
 components:
   schemas:
-    Token:
+    TokenReq:
       required:
-        - AccessToken
-        - TokenType
-        - ExpiresIn
-        - RefreshToken
-        - Scope
-        - Uid
+        - client_id
+        - client_secret
+        - grant_type
+        - code
       type: object
       properties:
-        AccessToken:
+        client_id:
+          description: Status values that need to be considered for filter
           type: string
-          description: Api token for use
-          example: abc123
-        TokenType:
+        client_secret:
+          description: Status values that need to be considered for filter
+          type: string
+        grant_type:
+          description: Static value of 'authorization_code'
+          type: string
+          example: authorization_code
+        code:
+          description: Code value provided by the `/oauth/authorize` route
+          type: string
+        redirect_uri:
+          description: Redirect uri
+          type: string
+    TokenResp:
+      required:
+        - access_token
+        - toke_type
+        - expires_in
+        - refresh_token
+        - scope
+        - uid
+      type: object
+      properties:
+        access_token:
+          type: string
+          description: Api token for use in subsequent requests
+        toke_type:
           type: string
           description: The type of token
           example: bearer
-        ExpiresIn:
+        expires_in:
           type: integer
           description: Seconds until the token expires
           format: int64
           example: 3600
-        RefeshToken:
+        refresh_token:
           type: string
           description: A token used to refresh the access token before it expires
-          example: def789
-        Scope:
+        scope:
           type: string
           description: The scope of the access tokens authorization
           example: read
-        Uid:
+        uid:
           type: string
           description: A unique identifier for the transaction
           example: a8040289-51fd-4fc6-a651-6e4d5c129d7d

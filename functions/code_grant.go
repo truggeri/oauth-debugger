@@ -17,7 +17,7 @@ type codeGrantResp struct {
 }
 
 func CodeGrant(w http.ResponseWriter, r *http.Request) {
-	mw := []Middleware{OnlyAllow(http.MethodPost), ParamsFromBody(), ValidateCsrfToken()}
+	mw := []Middleware{OnlyAllow(http.MethodPost), ParamsFromJson(), ValidateCsrfToken()}
 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 		codeGrant(ctx, w, r)
 		return nil
