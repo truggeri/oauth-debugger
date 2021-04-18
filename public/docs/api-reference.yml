@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.0.3
 info:
   title: Oauth Debugger
   description: This application is a mock authorization server to be used as a debugger for other application developers
@@ -62,6 +62,11 @@ paths:
       responses:
         200:
           description: Valid request
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              description: Sets a cookie for use in CSRF protection
           content:
             application/html: {}
         400:
@@ -94,6 +99,17 @@ paths:
       responses:
         200:
           description: Valid request
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+              description: Do not cache this response
+              example: no-store
+            Pragma:
+              schema:
+                type: string
+              description: Do not cache this response
+              example: no-cache
           content:
             application/json:
               schema:
