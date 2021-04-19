@@ -25,7 +25,7 @@ type tokenInfo struct {
 // Token Returns authorization token and user info
 func Token(w http.ResponseWriter, r *http.Request) {
 	mw := []Middleware{OnlyAllow(http.MethodPost), ParamsFromBody()}
-	handler := func(_ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 		token(ctx, w, r)
 		return nil
 	}
@@ -34,7 +34,13 @@ func Token(w http.ResponseWriter, r *http.Request) {
 }
 
 func token(ctx context.Context, w http.ResponseWriter, r *http.Request) {
-	params := ctx.Value(ParamKey).(params)
+	rawParams := ctx.Value(ParamKey)
+	if rawParams == nil {
+		http.Error(w, "failed to parse body", http.StatusBadRequest)
+		return
+	}
+
+	params := rawParams.(params)
 	if !validToken(&params) {
 		http.Error(w, params.message, params.code)
 		return

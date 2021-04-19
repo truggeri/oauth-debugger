@@ -44,6 +44,12 @@ func ParamsFromQuery() Middleware {
 func ParamsFromBody() Middleware {
 	m := func(handler Handler) Handler {
 		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+			err := r.ParseForm()
+			if err != nil {
+				http.Error(w, "", http.StatusBadRequest)
+				return nil
+			}
+
 			p := parse(r.PostForm)
 			return handler(context.WithValue(ctx, ParamKey, p), w, r)
 		}
