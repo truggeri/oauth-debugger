@@ -9,16 +9,6 @@ type loginTemplateData struct {
 	ClientId string
 }
 
-// Authorize prints only on GET request
-func Authorize(w http.ResponseWriter, r *http.Request) {
-	mw := []Middleware{OnlyAllow(http.MethodGet), SetCsrfCookie(), ParamsFromQuery()}
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-		authorize(ctx, w, r)
-		return nil
-	}
-	wrapMiddleware(mw, handler)(r.Context(), w, r)
-}
-
 func authorize(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	params := ctx.Value(ParamKey).(params)
 	if !validAuthorize(&params) {

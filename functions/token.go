@@ -22,17 +22,6 @@ type tokenInfo struct {
 	Name  string `json:"name,omitempty"`
 }
 
-// Token Returns authorization token and user info
-func Token(w http.ResponseWriter, r *http.Request) {
-	mw := []Middleware{OnlyAllow(http.MethodPost), ParamsFromBody()}
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-		token(ctx, w, r)
-		return nil
-	}
-
-	wrapMiddleware(mw, handler)(r.Context(), w, r)
-}
-
 func token(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	rawParams := ctx.Value(ParamKey)
 	if rawParams == nil {

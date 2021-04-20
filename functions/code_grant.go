@@ -16,15 +16,6 @@ type codeGrantResp struct {
 	Success     bool   `json:"success"`
 }
 
-func CodeGrant(w http.ResponseWriter, r *http.Request) {
-	mw := []Middleware{OnlyAllow(http.MethodPost), ParamsFromJson(), ValidateCsrfToken()}
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-		codeGrant(ctx, w, r)
-		return nil
-	}
-	wrapMiddleware(mw, handler)(r.Context(), w, r)
-}
-
 func codeGrant(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	params := ctx.Value(ParamKey).(params)
 	if !validCodeGrant(&params) {

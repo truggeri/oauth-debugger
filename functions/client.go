@@ -7,16 +7,6 @@ import (
 	"time"
 )
 
-// CreateClient generates and returns client codes
-func CreateClient(w http.ResponseWriter, r *http.Request) {
-	mw := []Middleware{OnlyAllow(http.MethodPost), ParamsFromBody()}
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-		createClient(ctx, w, r)
-		return nil
-	}
-	wrapMiddleware(mw, handler)(r.Context(), w, r)
-}
-
 func createClient(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	params := ctx.Value(ParamKey).(params)
 	if !validClient(&params) {
