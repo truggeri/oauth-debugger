@@ -6,13 +6,11 @@ import (
 	"fmt"
 	"net/http"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 type codeGrantResp struct {
 	ClientId    string `json:"client_id"`
-	RederictUri string `json:"redirect_uri"`
+	RedirectUri string `json:"redirect_uri"`
 	Success     bool   `json:"success"`
 }
 
@@ -29,23 +27,22 @@ func codeGrant(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	au := AuthUser{
-		Code:         RandomString(16),
-		RefreshToken: RandomString(32),
-		Token:        RandomString(32),
-		TokenExpires: time.Now().Add(24 * time.Hour),
-		Username:     params.Username,
-		Uuid:         uuid.New().String(),
+	code := Code{
+		Code:     RandomString(16),
+		ClientId: existingClient.ClientId,
+		Expires:  time.Now().Add(10 * time.Minute),
+		Username: params.Username,
 	}
-	err = mergeDbUser(existingClient, au)
+
+	err = createDbCode(code)
 	if err != nil {
-		http.Error(w, "Could not save new user", http.StatusExpectationFailed)
+		http.Error(w, "Could not save new code", http.StatusExpectationFailed)
 		return
 	}
 
 	resp := codeGrantResp{
 		ClientId:    existingClient.ClientId,
-		RederictUri: fmt.Sprintf("%s?code=%s", existingClient.RedirectUri, au.Code),
+		RedirectUri: fmt.Sprintf("%s?code=%s", existingClient.RedirectUri, code.Code),
 		Success:     true,
 	}
 	w.Header().Add("Content-Type", "application/json; charset=utf-8")

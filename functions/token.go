@@ -3,8 +3,8 @@ package oauthdebugger
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+	"time"
 )
 
 type tokenResponse struct {
@@ -30,33 +30,48 @@ func token(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	}
 
 	params := rawParams.(params)
-	if !validToken(&params) {
+	if !validTokenParams(&params) {
 		http.Error(w, params.message, params.code)
 		return
 	}
 
 	existingClient, err := getDbClient(params.ClientId)
 	if err != nil || existingClient.empty() {
-		http.Error(w, "client_id does not exist", http.StatusUnauthorized)
+		http.Error(w, "invalid_client - client_id does not exist", http.StatusBadRequest)
 		return
 	}
 
 	if existingClient.ClientSecret != params.ClientSecret {
-		http.Error(w, "client_secret is not valid", http.StatusUnauthorized)
+		http.Error(w, "invalid_client - client_secret is not valid", http.StatusBadRequest)
 		return
 	}
 
-	var au AuthUser
-	au, err = matchingAuthUser(existingClient, params.Code)
+	code, err := getDbCode(params.Code)
 	if err != nil {
-		http.Error(w, "code is not valid", http.StatusUnauthorized)
+		http.Error(w, "invalid_grant - code is not valid", http.StatusBadRequest)
 		return
 	}
 
-	respondWithJson(w, au)
+	if code.Expires.Before(time.Now()) {
+		http.Error(w, "invalid_grant - code is expired", http.StatusBadRequest)
+		return
+	}
+
+	if code.ClientId != params.ClientId {
+		http.Error(w, "invalid_grant - code not valid for given client_id", http.StatusBadRequest)
+		return
+	}
+
+	user, err := userFromCode(code)
+	if err != nil {
+		http.Error(w, "invalid_grant - could not move from code to token", http.StatusBadRequest)
+		return
+	}
+
+	respondWithJson(w, user)
 }
 
-func validToken(p *params) bool {
+func validTokenParams(p *params) bool {
 	if p.ClientId == "" {
 		p.code, p.message = http.StatusBadRequest, "client_id is missing"
 		return false
@@ -85,24 +100,15 @@ func validToken(p *params) bool {
 	return true
 }
 
-func matchingAuthUser(c Client, code string) (AuthUser, error) {
-	for _, au := range c.Users {
-		if au.Code == code {
-			return au, nil
-		}
-	}
-	return AuthUser{}, errors.New("code could not be found")
-}
-
-func respondWithJson(w http.ResponseWriter, au AuthUser) {
+func respondWithJson(w http.ResponseWriter, u User) {
 	resp := tokenResponse{
-		AccessToken:  au.Token,
+		AccessToken:  u.Token,
 		TokenType:    "bearer",
-		ExpiresIn:    au.TokenExpires.Unix(),
-		RefreshToken: au.RefreshToken,
+		ExpiresIn:    u.TokenExpires.Unix(),
+		RefreshToken: u.RefreshToken,
 		Scope:        "read",
-		Uid:          au.Uuid,
-		Info:         tokenInfo{Name: au.Username},
+		Uid:          u.Uuid,
+		Info:         tokenInfo{Name: u.Username},
 	}
 
 	w.Header().Add("Content-Type", "application/json; charset=utf-8")
