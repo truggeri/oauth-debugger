@@ -1,5 +1,12 @@
 # oauth-debugger
 
+[![CI](https://github.com/truggeri/oauth-debugger/actions/workflows/ci.yml/badge.svg)](https://github.com/truggeri/oauth-debugger/actions/workflows/ci.yml)
+
+![Go Badge](https://img.shields.io/badge/-Go-0084c0?style=flat&labelColor=00ADD8&logo=go&logoColor=white)
+![Firestore Badge](https://img.shields.io/badge/-Firestore-e6c152?style=flat&labelColor=FFCA28&logo=firebase&logoColor=white)
+![Svelte Badge](https://img.shields.io/badge/-Svelte-e65c2e?style=flat&labelColor=FF3E00&logo=svelte&logoColor=white)
+![GCPF Badge](https://img.shields.io/badge/-GCP_Functions-6794db?style=flat&labelColor=4285F4&logo=google-cloud&logoColor=white)
+
 An app for debugging oauth code, a mock Service Api
 
 ## Documentation
