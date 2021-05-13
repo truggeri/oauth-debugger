@@ -72,15 +72,6 @@ func ParamsFromJson() Middleware {
 	return m
 }
 
-func (p params) client() Client {
-	return Client{
-		ClientId:     p.ClientId,
-		ClientSecret: p.ClientSecret,
-		Name:         p.Name,
-		RedirectUri:  p.RedirectUri,
-	}
-}
-
 func parse(input url.Values) params {
 	var p params
 

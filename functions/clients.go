@@ -10,11 +10,11 @@ import (
 
 // Client representation of a client
 type Client struct {
-	ClientId     string    `firestore:"client_id"`
-	ClientSecret string    `firestore:"client_secret"`
-	Expires      time.Time `firestore:"expires"`
-	Name         string    `firestore:"name"`
-	RedirectUri  string    `firestore:"redirect_uri"`
+	ClientId     string    `firestore:"client_id" json:"client_id"`
+	ClientSecret string    `firestore:"client_secret" json:"client_secret"`
+	Expires      time.Time `firestore:"expires" json:"expires"`
+	Name         string    `firestore:"name" json:"name"`
+	RedirectUri  string    `firestore:"redirect_uri" json:"redirect_uri"`
 }
 
 func (c Client) empty() bool {
