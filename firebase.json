@@ -21,6 +21,10 @@
         "function": "code_grant"
       },
       {
+        "source": "/oauth/info",
+        "function": "info"
+      },
+      {
         "source": "/oauth/token",
         "function": "token"
       }
