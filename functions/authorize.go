@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"time"
 )
 
 type loginTemplateData struct {
@@ -21,6 +22,11 @@ func authorize(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	existingClient, err := getDbClient(params.ClientId)
 	if err != nil || existingClient.empty() {
 		http.Error(w, "client_id does not exist", http.StatusUnauthorized)
+		return
+	}
+
+	if existingClient.Expires.Before(time.Now()) {
+		http.Error(w, "Client is expired", http.StatusUnauthorized)
 		return
 	}
 

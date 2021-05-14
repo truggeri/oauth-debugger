@@ -31,6 +31,11 @@ func codeGrant(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if existingClient.Expires.Before(time.Now()) {
+		http.Error(w, "Client is expired", http.StatusUnauthorized)
+		return
+	}
+
 	code := Code{
 		Code:     RandomString(16),
 		ClientId: existingClient.ClientId,
