@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+const LOGIN_TEMPLATE = "login.tmpl"
+
 type loginTemplateData struct {
 	ClientId string
 }
@@ -30,7 +32,7 @@ func authorize(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = renderTemplate(w, "login.tmpl", loginTemplateData{ClientId: existingClient.ClientId})
+	err = renderTemplate(w, LOGIN_TEMPLATE, loginTemplateData{ClientId: existingClient.ClientId})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
