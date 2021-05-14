@@ -18,6 +18,7 @@ type params struct {
 	Name         string    `json:"name,omitempty"`
 	RedirectUri  string    `json:"redirect_uri,omitempty"`
 	ResponseType string    `json:"response_type,omitempty"`
+	Token        string    `json:"token,omitempty"`
 	Username     string    `json:"username,omitempty"`
 }
 

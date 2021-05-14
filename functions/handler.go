@@ -35,14 +35,15 @@ func CreateClient(w http.ResponseWriter, r *http.Request) {
 	wrapMiddleware(mw, handler)(r.Context(), w, r)
 }
 
-// func Info(w http.ResponseWriter, r *http.Request) {
-// 	mw := []Middleware{OnlyAllow(http.MethodGet), ValidateAuth()}
-// 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-// 		info(ctx, w, r)
-// 		return nil
-// 	}
-// 	wrapMiddleware(mw, handler)(r.Context(), w, r)
-// }
+// Info Given an auth token, returns user information
+func Info(w http.ResponseWriter, r *http.Request) {
+	mw := []Middleware{OnlyAllow(http.MethodGet), RequireBearer()}
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+		info(ctx, w, r)
+		return nil
+	}
+	wrapMiddleware(mw, handler)(r.Context(), w, r)
+}
 
 // Token Returns authorization token and user info
 func Token(w http.ResponseWriter, r *http.Request) {

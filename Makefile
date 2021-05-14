@@ -65,6 +65,9 @@ gcp-deploy-create-client: gcp-authorize
 
 gcp-deploy-code-grant: gcp-authorize
 	$(call gcp_deploy,code_grant,CodeGrant)
+
+gcp-deploy-info: gcp-authorize
+	$(call gcp_deploy,info,Info)
 	
 gcp-deploy-token: gcp-authorize
 	$(call gcp_deploy,token,Token)

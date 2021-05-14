@@ -26,6 +26,7 @@ func main() {
 	http.Handle("/client", requestLogging(http.HandlerFunc(oauthdebugger.CreateClient)))
 	http.Handle("/oauth/authorize", requestLogging(http.HandlerFunc(oauthdebugger.Authorize)))
 	http.Handle("/oauth/grant", requestLogging((http.HandlerFunc(oauthdebugger.CodeGrant))))
+	http.Handle("/oauth/info", requestLogging((http.HandlerFunc(oauthdebugger.Info))))
 	http.Handle("/oauth/token", requestLogging(http.HandlerFunc(oauthdebugger.Token)))
 
 	fs := http.FileServer(http.Dir("./public"))

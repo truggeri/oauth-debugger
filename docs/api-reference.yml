@@ -83,6 +83,55 @@ paths:
               schema:
                 type: string
                 example: client_id does not exist
+  /oauth/info:
+    get:
+      tags:
+        - oauth2
+      summary: Get user information for the given token
+      description: Given a token, this will return information about the user that the token belongs to
+      operationId: info
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+            format: bearer
+          required: true
+          example: Bearer token
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Valid request
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+              description: Do not cache this response
+              example: no-store
+            Pragma:
+              schema:
+                type: string
+              description: Do not cache this response
+              example: no-cache
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InfoResp'
+        400:
+          description: Missing required param (via Authorization header)
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: token is missing
+        401:
+          description: Invalid or expired request
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: token is invalid
   /oauth/token:
     post:
       tags:
@@ -129,7 +178,31 @@ paths:
                 type: string
                 example: client_id does not exist
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Token 
   schemas:
+    InfoResp:
+      type: object
+      properties:
+        breed:
+          description: The breed of the user
+          type: string
+          example: Maltese
+        good_boy:
+          description: Is the user a good boy (always true)
+          type: boolean
+          example: true
+        image_url:
+          description: Url of an image url
+          type: string
+          example: https://someurl.com/images/good_boy.jpg
+        name:
+          description: Name of the user
+          type: string
+          example: Benny
     TokenReq:
       required:
         - client_id
