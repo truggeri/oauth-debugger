@@ -19,6 +19,8 @@ type User struct {
 	Uuid         string    `firestore:"uuid"`
 }
 
+const USER_DURATION = 24 * time.Hour
+
 var emptyUser = User{}
 
 // userFromCode Given a db code, create a db user and remove the code
@@ -27,7 +29,7 @@ func userFromCode(code Code) (User, error) {
 		ClientId:     code.ClientId,
 		RefreshToken: RandomString(32),
 		Token:        RandomString(32),
-		TokenExpires: time.Now().Add(24 * time.Hour),
+		TokenExpires: time.Now().Add(USER_DURATION),
 		Username:     code.Username,
 		Uuid:         uuid.New().String(),
 	}

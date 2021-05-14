@@ -3,6 +3,7 @@ package oauthdebugger
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"time"
 )
@@ -30,8 +31,9 @@ func token(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	}
 
 	params := rawParams.(params)
-	if !validTokenParams(&params) {
-		http.Error(w, params.message, params.code)
+	err := validateToken(params)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -71,33 +73,24 @@ func token(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	respondWithJson(w, user)
 }
 
-func validTokenParams(p *params) bool {
+func validateToken(p params) error {
 	if p.ClientId == "" {
-		p.code, p.message = http.StatusBadRequest, "client_id is missing"
-		return false
+		return errors.New("client_id is missing")
 	}
 
 	if p.ClientSecret == "" {
-		p.code, p.message = http.StatusBadRequest, "client_secret is missing"
-		return false
+		return errors.New("client_secret is missing")
 	}
 
 	if p.Code == "" {
-		p.code, p.message = http.StatusBadRequest, "code is missing"
-		return false
+		return errors.New("code is missing")
 	}
 
 	if p.GrantType != "authorization_code" {
-		p.code, p.message = http.StatusBadRequest, "grant_type is not 'authorization_code'"
-		return false
+		return errors.New("grant_type is not 'authorization_code'")
 	}
 
-	if p.RedirectUri == "" {
-		p.code, p.message = http.StatusBadRequest, "redirect_uri is missing"
-		return false
-	}
-
-	return true
+	return nil
 }
 
 func respondWithJson(w http.ResponseWriter, u User) {
