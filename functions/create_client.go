@@ -2,7 +2,6 @@ package oauthdebugger
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"net/http"
 	"time"
@@ -31,8 +30,7 @@ func createClient(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Add("Content-Type", "application/json; charset=utf-8")
-	json.NewEncoder(w).Encode(newClient)
+	RespondWithJson(w, newClient)
 }
 
 func validateClient(p params) error {

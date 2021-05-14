@@ -2,7 +2,6 @@ package oauthdebugger
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"net/http"
 	"time"
@@ -103,9 +102,5 @@ func respondWithJson(w http.ResponseWriter, u User) {
 		Uid:          u.Uuid,
 		Info:         tokenInfo{Name: u.Username},
 	}
-
-	w.Header().Add("Content-Type", "application/json; charset=utf-8")
-	w.Header().Add("Cache-Control", "no-store")
-	w.Header().Add("Pragma", "no-cache")
-	json.NewEncoder(w).Encode(resp)
+	RespondWithJson(w, resp)
 }

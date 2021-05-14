@@ -2,7 +2,6 @@ package oauthdebugger
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -54,8 +53,7 @@ func codeGrant(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 		RedirectUri: fmt.Sprintf("%s?code=%s", existingClient.RedirectUri, code.Code),
 		Success:     true,
 	}
-	w.Header().Add("Content-Type", "application/json; charset=utf-8")
-	json.NewEncoder(w).Encode(resp)
+	RespondWithJson(w, resp)
 }
 
 func validateCodeGrant(p params) error {

@@ -2,6 +2,7 @@ package oauthdebugger
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 )
 
@@ -33,4 +34,11 @@ func OnlyAllow(method string) Middleware {
 		return h
 	}
 	return m
+}
+
+func RespondWithJson(w http.ResponseWriter, resp interface{}) error {
+	w.Header().Add("Content-Type", "application/json; charset=utf-8")
+	w.Header().Add("Cache-Control", "no-store")
+	w.Header().Add("Pragma", "no-cache")
+	return json.NewEncoder(w).Encode(resp)
 }
