@@ -2,6 +2,7 @@ package oauthdebugger
 
 import (
 	"context"
+	"errors"
 	"net/http"
 )
 
@@ -11,8 +12,9 @@ type loginTemplateData struct {
 
 func authorize(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	params := ctx.Value(ParamKey).(params)
-	if !validAuthorize(&params) {
-		http.Error(w, params.message, params.code)
+	err := validateAuthorize(params)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -29,21 +31,14 @@ func authorize(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func validAuthorize(p *params) bool {
+func validateAuthorize(p params) error {
 	if p.ClientId == "" {
-		p.code, p.message = http.StatusBadRequest, "client_id is missing"
-		return false
-	}
-
-	if p.RedirectUri == "" {
-		p.code, p.message = http.StatusBadRequest, "redirect_uri is missing"
-		return false
+		return errors.New("client_id is missing")
 	}
 
 	if p.ResponseType != "code" {
-		p.code, p.message = http.StatusBadRequest, "response_type is not 'code'"
-		return false
+		return errors.New("response_type is not 'code'")
 	}
 
-	return true
+	return nil
 }
