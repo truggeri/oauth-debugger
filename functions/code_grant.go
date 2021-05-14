@@ -3,6 +3,7 @@ package oauthdebugger
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -14,10 +15,13 @@ type codeGrantResp struct {
 	Success     bool   `json:"success"`
 }
 
+const CODE_DURATION = 10 * time.Minute
+
 func codeGrant(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	params := ctx.Value(ParamKey).(params)
-	if !validCodeGrant(&params) {
-		http.Error(w, params.message, params.code)
+	err := validateCodeGrant(params)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -30,7 +34,7 @@ func codeGrant(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	code := Code{
 		Code:     RandomString(16),
 		ClientId: existingClient.ClientId,
-		Expires:  time.Now().Add(10 * time.Minute),
+		Expires:  time.Now().Add(CODE_DURATION),
 		Username: params.Username,
 	}
 
@@ -49,16 +53,14 @@ func codeGrant(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(resp)
 }
 
-func validCodeGrant(p *params) bool {
+func validateCodeGrant(p params) error {
 	if p.ClientId == "" {
-		p.code, p.message = http.StatusBadRequest, "client_id is missing"
-		return false
+		return errors.New("client_id is missing")
 	}
 
 	if p.Username == "" {
-		p.code, p.message = http.StatusBadRequest, "username is missing"
-		return false
+		return errors.New("username is missing")
 	}
 
-	return true
+	return nil
 }
