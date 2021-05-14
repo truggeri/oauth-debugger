@@ -7,7 +7,7 @@ import (
 
 // Authorize Displays user form to log in and authorize the requesting client
 func Authorize(w http.ResponseWriter, r *http.Request) {
-	mw := []Middleware{OnlyAllow(http.MethodGet), SetCsrfCookie(), ParamsFromQuery()}
+	mw := []Middleware{OnlyAllow(http.MethodGet), ParamsFromQuery(), SetCsrfCookie()}
 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 		authorize(ctx, w, r)
 		return nil

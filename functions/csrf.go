@@ -23,7 +23,7 @@ func SetCsrfCookie() Middleware {
 	m := func(handler Handler) Handler {
 		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 			expire := time.Now().Add(time.Minute)
-			csrfToken := generateCsrfToken(r)
+			csrfToken := generateCsrfToken(ctx)
 			cookie := http.Cookie{
 				Name:       csrfCookieName,
 				Value:      csrfToken,
@@ -45,18 +45,16 @@ func SetCsrfCookie() Middleware {
 	return m
 }
 
-func generateCsrfToken(r *http.Request) string {
-	t := time.Now().Unix()
-	h := hmacToken(fmt.Sprintf(csrfSecretFormat, clientId(r), t))
-	return fmt.Sprintf(csrfSecretFormat, hex.EncodeToString(h.Sum(nil)), t)
-}
-
-func clientId(r *http.Request) string {
-	params := r.URL.Query()
-	if len(params["client_id"]) != 0 && params["client_id"][0] != "" {
-		return params["client_id"][0]
+func generateCsrfToken(ctx context.Context) string {
+	p := ctx.Value(ParamKey)
+	if p == nil {
+		return "err"
 	}
-	return ""
+
+	clientId := p.(params).ClientId
+	t := time.Now().Unix()
+	h := hmacToken(fmt.Sprintf(csrfSecretFormat, clientId, t))
+	return fmt.Sprintf(csrfSecretFormat, hex.EncodeToString(h.Sum(nil)), t)
 }
 
 func hmacToken(value string) hash.Hash {
@@ -76,7 +74,13 @@ func ValidateCsrfToken() Middleware {
 
 			headerValues := strings.Split(r.Header[csrfHeaderName][0], "-|-")
 			given_time, _ := strconv.Atoi(headerValues[1])
-			clientId := ctx.Value(ParamKey).(params).ClientId
+			p := ctx.Value(ParamKey)
+			if p == nil {
+				http.Error(w, "csrf token could not be validated", http.StatusUnauthorized)
+				return nil
+			}
+
+			clientId := p.(params).ClientId
 			expected := hmacToken(fmt.Sprintf(csrfSecretFormat, clientId, given_time))
 			exp := strings.Trim(hex.EncodeToString(expected.Sum(nil)), " \r\n")
 			gvn := strings.Trim(headerValues[0], " \r\n")
