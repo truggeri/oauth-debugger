@@ -15,6 +15,7 @@ RUN mkdir /deploy
 COPY Makefile /deploy
 COPY go.* /deploy/
 COPY templates /deploy
+COPY data /deploy
 COPY functions /deploy
 
 WORKDIR /deploy

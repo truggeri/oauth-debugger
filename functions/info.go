@@ -33,9 +33,12 @@ func info(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	localInfo := localUser(user.Username)
 	resp := infoResp{
-		GoodBoy: true,
-		Name:    user.Username,
+		Breed:    localInfo.Breed,
+		GoodBoy:  true,
+		ImageUrl: localInfo.ImageUrl,
+		Name:     localInfo.Name,
 	}
 	RespondWithJson(w, resp)
 }

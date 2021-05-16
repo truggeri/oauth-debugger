@@ -1,0 +1,16 @@
+--- 
+- 
+  breed: Maltese
+  image_url: https://oauth-debugger.truggeri.com/assets/images/benny.jpg
+  name: Benny
+  username: benny
+- 
+  breed: Maltese
+  image_url: https://oauth-debugger.truggeri.com/assets/images/lilah.jpg
+  name: Lilah
+  username: lilah
+- 
+  breed: Terrier
+  image_url: https://oauth-debugger.truggeri.com/assets/images/emmy-k.jpg
+  name: "Emmy K"
+  username: emmy-k
