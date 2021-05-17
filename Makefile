@@ -52,10 +52,20 @@ define gcp_deploy
   gcloud functions deploy $(1) --entry-point=$(2) --project=$(GCP_PROJECT) --allow-unauthenticated --region=$(REGION) --runtime $(RUNTIME) --trigger-http --memory=$(MEM) --env-vars-file=/secrets/.env.yaml
 endef
 
+define gcp_remove
+	sh -c 'gcloud container images delete "$(1)/worker"; gcloud container images delete "$(1)/cache"'
+endef
+
 gcp-authorize:
 	gcloud auth activate-service-account $(GCP_ACCOUNT) --key-file=/secrets/key.json
 
-gcp-deploy-all: gcp-deploy-authorize gcp-deploy-create-client gcp-deploy-code-grant gcp-deploy-token
+# @see https://gist.github.com/kichiemon/4ba5bf921bc9e4d208db8723da69f0ed
+gcp-purge: gcp-authorize
+	gcloud container images list --repository=us.gcr.io/$(GCP_PROJECT)/gcf/us-central1 | \
+	awk 'NR!=1' | \
+	xargs -I {image} $(call gcp_remove,{image});
+
+gcp-deploy-all: gcp-deploy-authorize gcp-deploy-create-client gcp-deploy-code-grant gcp-deploy-info gcp-deploy-token
 
 gcp-deploy-authorize: gcp-authorize
 	$(call gcp_deploy,authorize,Authorize)
