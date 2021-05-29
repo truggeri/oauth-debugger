@@ -15,19 +15,29 @@ COPY cmd/server/main.go /service/cmd/server/main.go
 RUN go build -ldflags "-X main.build=${VCS_REF}" cmd/server/main.go
 
 # -----------------------------------------------------------------------------
-# Node Front End Build
+# Node Frontend Build
 # 
 FROM node:14.16.0 as node-build
 
 RUN mkdir /work
-COPY *.js /work/
+COPY frontend/src/*.js /work/
 COPY *.json /work/
 WORKDIR /work
 RUN npm install
 
-COPY src /work/src
-COPY types /work/types
+RUN mkdir -p /static/js
+RUN mkdir -p /static/css
+COPY frontend/src /work/
 RUN npm run build
+
+# -----------------------------------------------------------------------------
+# Hugo Frontend Build
+# 
+FROM klakegg/hugo:0.83.1 as hugo-build
+COPY --from=node-build /static/js/* /src/static/js/
+COPY --from=node-build /static/css/* /src/static/css/
+COPY frontend /src
+RUN hugo
 
 # -----------------------------------------------------------------------------
 # Running Application
@@ -40,9 +50,7 @@ RUN apk add --no-cache bash
 
 COPY --from=go-build /service/main /service/main
 COPY templates /service/serverless_function_source_code
-COPY public /service/public
-COPY docs/api-reference.yml /service/public/api-reference.yml
-COPY --from=node-build /work/public /service/public
+COPY --from=hugo-build /src/public /service/public
 WORKDIR /service
 EXPOSE 8090
 CMD ["./main"]

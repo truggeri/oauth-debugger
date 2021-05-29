@@ -1,0 +1,35 @@
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{{- if hugo.IsProduction | or (eq .Site.Params.env "production") }}
+<meta name="robots" content="index, follow">
+{{- else }}
+<meta name=" robots" content="noindex, nofollow">
+{{- end -}}
+<link rel="canonical" href=""/>
+
+<!-- Title -->
+<title>{{ if .IsHome }}{{else}}{{ if .Title }}{{ .Title }} | {{ end }}{{end}}{{ .Site.Title }}</title>
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+<link rel="manifest" href="/favicon/site.webmanifest">
+
+<!-- Meta -->
+<meta name="author" content="{{ .Site.Params.author }}">
+<meta name="description" content="{{- with .Description }}{{ . }}{{- else }}{{- if .IsPage}}
+    {{- .Summary | default (printf "%s - %s" .Title  .Site.Title) }}{{- else }}
+    {{- with .Site.Params.description }}{{ . }}{{- end }}{{- end }}{{- end -}}">
+<meta name="theme-color" content="{{ .Site.Params.themeColor }}">
+<meta name="msapplication-TileColor" content="{{ .Site.Params.themeColor }}">
+
+<!-- Style -->
+<link rel="preload stylesheet" href="/css/water.2.0.0.min.css" as="style">
+<link rel="preload stylesheet" href="/css/main.css" as="style">
+{{ if (isset .Params "style") }}
+  {{ range .Params.style }}
+    <link rel="preload stylesheet" href="/css/{{ . }}.css" as="style">
+  {{ end }}
+{{ end }}

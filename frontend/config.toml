@@ -1,0 +1,9 @@
+baseURL = "https://testoauth.com/"
+languageCode = "en-us"
+title = "Test OAuth"
+
+[params]
+author = "Thomas Ruggeri"
+description = "Test your OAuth2 integrations with us"
+github = "https://github.com/truggeri/oauth-debugger"
+themeColor = "#2e2e33"

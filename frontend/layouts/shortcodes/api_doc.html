@@ -1,0 +1,15 @@
+<style>
+  .api-doc {
+    background-color: white;
+    left: 0;
+    margin: 16px;
+    position: absolute;
+    width: calc(100% - 32px);
+  }
+</style>
+
+<div class="api-doc">
+  <redoc spec-url="{{ .Get "source" }}" expand-responses="all" hide-loading native-scrollbars path-in-middle-panel expandResponses="200,201">
+  </redoc>
+  <script src="/js/redoc.standalone.js"></script>
+</div>

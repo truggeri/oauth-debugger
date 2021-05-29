@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.Language }}" dir="{{ .Language.LanguageDirection | default "auto" }}">
+<head>
+  {{- partial "head.html" . }}
+</head>
+
+<body class="" id="top">
+  {{- partial "header.html" . }}
+
+  <main class="main">
+    {{ safeHTML .Content }}
+  </main>
+
+  {{- partial "footer.html" . }}
+</body>
+</html>

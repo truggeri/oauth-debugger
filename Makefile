@@ -85,5 +85,12 @@ gcp-deploy-token: gcp-authorize
 # ==============================================================================
 # Front end
 
-firebase-deploy:
+frontend-deploy:
 	firebase deploy --only hosting:outh-debugger
+
+frontend-build:
+	cd frontend && \
+	npm run build && \
+	hugo
+
+frontend: frontend-build frontend-deploy
