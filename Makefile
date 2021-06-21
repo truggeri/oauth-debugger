@@ -89,8 +89,9 @@ frontend-deploy:
 	firebase deploy --only hosting:outh-debugger
 
 frontend-build:
-	cd frontend && \
+	cd frontend/src && \
 	npm run build && \
+	cd .. && \
 	hugo
 
 frontend: frontend-build frontend-deploy

@@ -12,7 +12,7 @@ externalDocs:
   description: See our Github
   url: https://github.com/truggeri/oauth-debugger/
 servers:
-- url: https://oauth-debugger.truggeri.com/
+- url: https://testoauth.com/
 tags:
   - name: oauth2
     description: Oauth2 routes

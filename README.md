@@ -11,7 +11,7 @@ An app for debugging oauth code, a mock Service Api
 
 ## Documentation
 
-See our [api documentation](https://oauth-debugger.truggeri.com/docs) for full details of each endpoint that's available.
+See our [api documentation](https://testoauth.com/docs) for full details of each endpoint that's available.
 
 ## Build
 
