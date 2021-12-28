@@ -8,18 +8,18 @@
 
     <title>Test OAuth | Login</title>
 
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/favicon/site.webmanifest">
 
     <meta name="theme-color" content="#2e2e33">
     <meta name="msapplication-TileColor" content="#2e2e33">
 
     <meta name="description" content="Authenticate and authorize with our mock identity provider.">
-    <link rel="preload" href="/login.js" as="script">
-    <link rel="preload stylesheet" href="/assets/css/water.css" as="style">
-    <link rel="preload stylesheet" href="/login.css" as="style">
+    <link rel="preload" href="/js/login.js" as="script">
+    <link rel="preload stylesheet" href="/css/water.2.0.0.min.css" as="style">
+    <link rel="preload stylesheet" href="/css/login.css" as="style">
   </head>
   <body>
     <h1>Resource Owner Authorization</h1>
@@ -31,7 +31,7 @@
 
     <div id="login-app"></div>
     <script>window.clientId = '{{.ClientId}}';</script>
-    <script async src="/login.js"></script>
+    <script async src="/js/login.js"></script>
 
     <footer>
       Created by <a href="https://truggeri.com/" target="blank">@truggeri</a> ©2021 |
