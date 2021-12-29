@@ -47,7 +47,7 @@
   }
 
   function grantCode(_event: any) {
-    const url = `${CONFIG.default.app_url}/oauth/grant`
+    const url = `/oauth/grant`
     const req = {
       client_id: clientId,
       username: user.username,

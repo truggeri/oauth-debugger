@@ -38,6 +38,7 @@ make docker-run
 The UI is built, or dev served, by Webpack.
 
 ```bash
+cd frontend/src/
 npm install
 npm run build # for production build
 npm run dev # for dev build
